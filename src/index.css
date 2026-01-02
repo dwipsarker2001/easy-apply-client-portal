@@ -1,0 +1,100 @@
+@import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@300;400;500;600;700&display=swap");
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #343b4a;
+  --color-secondary: #6c757d;
+  --color-active: #188ae2;
+  --color-inverted: #ffffff;
+  --color-background: #f0f4f7;
+  --color-component: #ffffff;
+  --color-component-active: #ffffff;
+  --color-border: #dbdbdb;
+
+  --font-hind-siliguri: "Hind Siliguri", sans-serif;
+
+  /* colors for header */
+  /* --color-header: #343b4a;
+  --color-header-item: #aab9ca;
+  --color-header-item-hover: #e4f0ff;
+  --color-header-search: #3f4759;
+  --color-header-user: #3f4759; */
+
+  /* colors for body */
+  /* --color-background: #f2f5f7;
+  --color-foreground: #ffffff; */
+
+  /* colors for sidebar */
+  /* --color-active-background: #188ae21a;
+  --color-active-content: #188ae2;
+  --color-sidebar-menu-item: #6c757d; */
+
+  /* --color-boarder: #343b4a; */
+
+  /* color for text */
+  /* --color-heading: #4c4c5c;
+  --color-details: #9ba6b7;
+  --color-active: #188ae2; */
+}
+
+@layer base {
+  [data-theme="light"] {
+    --color-primary: #343b4a;
+    --color-secondary: #6c757d;
+    --color-active: #188ae2;
+    --color-inverted: #ffffff;
+    --color-background: #f0f4f7;
+    --color-component: #ffffff;
+    --color-component-active: #ffffff;
+    --color-border: #dbdbdb;
+
+    --font-hind-siliguri: "Hind Siliguri", sans-serif;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+body {
+  font-family: "Barlow", sans-serif;
+  overflow: hidden;
+}
+.sidebar {
+  @apply bg-component absolute flex h-screen w-72 shrink-[0] flex-col gap-4 transition ease-in-out lg:static lg:translate-0;
+}
+
+.sidebar_menu_item {
+  @apply hover:bg-active text-active hover:text-active flex items-center gap-4 rounded-md px-3 py-2 font-medium transition ease-in-out;
+}
+
+.sidebar_menu_item.active {
+  @apply bg-active text-active font-semibold;
+}
+
+/* Global scrollbar styles for all elements */
+::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f5f5f5;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+  border: 3px solid #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #9f9f9f;
+}
+
+/* Firefox specific */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c9c9c9 #f1f1f1;
+}

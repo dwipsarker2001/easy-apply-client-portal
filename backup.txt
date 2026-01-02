@@ -1,0 +1,52 @@
+import React, { ChangeEvent } from "react";
+import { useTranslation } from "react-i18next";
+import "../locales/i18n";
+import Name from "./Name";
+
+const Header: React.FC = () => {
+  const { t, i18n } = useTranslation();
+
+  const changeLanguage = (e: ChangeEvent<HTMLSelectElement>) => {
+    const selectedLang = e.target.value;
+    i18n.changeLanguage(selectedLang);
+  };
+
+  return (
+    <header>
+      <select onChange={changeLanguage}>
+        <option value="en">English</option>
+        <option value="bn">Bangla</option>
+      </select>
+      <header className="bg-primary p-4 text-white">{t("welcome")}</header>
+      <Name />
+    </header>
+  );
+};
+
+export default Header;
+
+
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #1e40af;
+  --color-accent: #f472b6;
+}
+
+@layer base {
+  [data-theme="light"] {
+    --color-primary: #1e40af;
+    --color-accent: #f472b6;
+  }
+
+  [data-theme="dark"] {
+    --color-primary: #0f172a;
+    --color-accent: #f43f5e;
+  }
+
+  [data-theme="pastel"] {
+    --color-primary: #a78bfa;
+    --color-accent: #fbcfe8;
+  }
+}
+

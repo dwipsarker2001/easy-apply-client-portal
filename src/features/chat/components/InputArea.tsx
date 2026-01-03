@@ -12,19 +12,21 @@ const InputArea: React.FC = () => {
   const mediaFrom = useAppSelector((state) => state.app.mediaFrom);
 
   return (
-    <div className="absolute bottom-0 w-screen px-4 border flex flex-col gap-2 pb-4">
+    <div className="absolute bottom-0 w-screen z-99 px-3 flex flex-col gap-2 pb-4">
       {/* input sheet area  */}
-      <div className={`h-[200px] bg-white ${mediaFrom ? "" : "hidden"}`}>
+      <div
+        className={`h-[200px] bg-white rounded-4xl p-4 ${mediaFrom ? "" : "hidden"}`}
+      >
         <label htmlFor="">Select file to upload</label>
         <input type="file" />
       </div>
 
       {/* Message Input Area  */}
       <div className="flex items-center gap-2">
-        <div className="bg-white grow flex">
+        <div className="bg-white grow flex px-5 rounded-full">
           <input
             type="text"
-            className="grow py-4"
+            className="grow py-4 focus:outline-none"
             placeholder="Message is not enabled..."
           />
           <button onClick={() => dispatch(setMediaFrom("camera"))}>
@@ -35,7 +37,7 @@ const InputArea: React.FC = () => {
         {/* document selection & send button area */}
         <button
           onClick={() => dispatch(setMediaFrom("storage"))}
-          className="py-2 bg-white text-black rounded"
+          className="py-2 bg-white text-black h-14 w-14 rounded-full grid place-content-center"
         >
           <HugeiconsIcon icon={Image02FreeIcons} />
         </button>

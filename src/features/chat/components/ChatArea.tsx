@@ -1,27 +1,39 @@
+import React, { useEffect, useRef } from "react";
 import TextMessage from "@/components/TextMessage";
 import { setMediaFrom } from "@/features/state";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import React from "react";
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
-  const mediaFrom = useAppSelector((state) => state.app.mediaFrom);
+  const { mediaFrom } = useAppSelector((state) => state.app);
+
+  const chatEndRef = useRef<HTMLDivElement>(null);
+
+  // Auto-scroll to bottom on mount
+  useEffect(() => {
+    chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const isMediaOpen = Boolean(mediaFrom);
 
   return (
-    <main className=" bg-red-400 h-[500px] flex-grow relative">
-      {/* Blur background when media sheet is open */}
-      <div
-        onClick={() => dispatch(setMediaFrom(null))}
-        className={`h-full w-full bg-black/20 backdrop-blur-[2px] absolute top-0 ${!mediaFrom ? "hidden" : ""}`}
-      ></div>
+    <main className="bg-[#EFEEF3] flex-grow relative overflow-hidden pb-[80px]">
+      {/* Media overlay */}
+      {isMediaOpen && (
+        <div
+          onClick={() => dispatch(setMediaFrom(null))}
+          className="absolute top-0 z-1 h-full w-full bg-black/20 backdrop-blur-[2px]"
+        />
+      )}
 
-      <div className="flex flex-col border h-full pb-[100px] overflow-y-scroll px-5 ">
+      <div className="flex flex-col h-full overflow-y-auto px-5">
         <TextMessage message="Message One" />
-        {Array(40)
-          .fill(null)
-          .map((_, index) => (
-            <TextMessage message="Message One" type="sent" />
-          ))}
+
+        {Array.from({ length: 40 }).map((_, index) => (
+          <TextMessage key={index} message="Message One" type="sent" />
+        ))}
+
+        <div ref={chatEndRef} />
       </div>
     </main>
   );

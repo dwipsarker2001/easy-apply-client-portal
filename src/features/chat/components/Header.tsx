@@ -5,7 +5,9 @@ import React from "react";
 const Header: React.FC = () => {
   return (
     <header className=" bg-white flex items-center  justify-between p-4 ">
-      {/* chat avatar and status  */}
+      {/*-------------------------------------
+             Chat Avatar & Status  
+        -------------------------------------*/}
       <div className="flex items-center gap-4">
         <div className="h-10 w-10 rounded-full relative border-2 border-gray-400">
           <img
@@ -20,7 +22,9 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* more options button  */}
+      {/*-------------------------------------
+             More Options Button 
+        -------------------------------------*/}
       <button>
         <HugeiconsIcon icon={MoreVerticalFreeIcons} />
       </button>

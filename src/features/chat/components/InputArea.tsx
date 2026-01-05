@@ -9,10 +9,12 @@ import {
 } from "@hugeicons/core-free-icons";
 import { HugeiconsIcon } from "@hugeicons/react";
 import React, { useState } from "react";
+import { useDocumentUpload } from "../hooks";
 
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const mediaFrom = useAppSelector((state) => state.app.mediaFrom);
+  const { uploadDocument, isLoading } = useDocumentUpload();
 
   const [textValue, setTextValue] = useState("");
 
@@ -29,13 +31,27 @@ const InputArea: React.FC = () => {
     dispatch(setMediaFrom(null)); // close media/document selector
   };
 
-  // Handle file input
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  // Handle file input for document upload only
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files || files.length === 0) return;
-    dispatch(addFiles(Array.from(files)));
-    dispatch(setMediaFrom(null));
-    e.target.value = "";
+
+    const file = files[0]; // only handle the first file
+    const formData = new FormData();
+    formData.append("file", file);
+
+    try {
+      // Call RTK Query mutation
+      // await uploadDocument(formData);
+
+      // Optionally store file in Redux if needed
+      dispatch(addFiles([file]));
+      dispatch(setMediaFrom(null));
+    } catch (err) {
+      console.error("Document upload failed:", err);
+    } finally {
+      e.target.value = ""; // reset input
+    }
   };
 
   // Determine if we are in "typing mode"
@@ -62,21 +78,21 @@ const InputArea: React.FC = () => {
           <div className="grid grid-cols-3 gap-2">
             <label
               htmlFor="master-input"
-              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1"
+              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1 cursor-pointer"
             >
               <HugeiconsIcon icon={GoogleDocFreeIcons} />
               <p>Document</p>
             </label>
             <label
               htmlFor="master-input"
-              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1"
+              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1 cursor-not-allowed opacity-50"
             >
               <HugeiconsIcon icon={Image02FreeIcons} />
               <p>Photo</p>
             </label>
             <label
               htmlFor="master-input"
-              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1"
+              className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1 cursor-not-allowed opacity-50"
             >
               <HugeiconsIcon icon={SignatureFreeIcons} />
               <p>Signature</p>
@@ -89,6 +105,7 @@ const InputArea: React.FC = () => {
             id="master-input"
             type="file"
             className="hidden"
+            accept=".pdf,.doc,.docx" // optional: allow only document files
           />
         </div>
       )}
@@ -127,7 +144,7 @@ const InputArea: React.FC = () => {
             onClick={() => dispatch(setMediaFrom("storage"))}
             className="py-2 bg-white text-black h-14 w-14 rounded-full grid place-content-center"
           >
-            <HugeiconsIcon icon={Image02FreeIcons} />
+            <HugeiconsIcon icon={GoogleDocFreeIcons} />
           </button>
         )}
       </div>

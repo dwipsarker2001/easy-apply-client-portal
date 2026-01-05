@@ -59,7 +59,7 @@ const ChatArea: React.FC = () => {
                   <a
                     href={fileURL}
                     download={item.file.name}
-                    className="block bg-white p-3 rounded-xl text-blue-600 text-sm shadow-md truncate"
+                    className="block bg-white p-3 text-blue-600 text-sm truncate"
                     onClick={() => URL.revokeObjectURL(fileURL)}
                   >
                     📄 {item.file.name}

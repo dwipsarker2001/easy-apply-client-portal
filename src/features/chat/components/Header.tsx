@@ -12,7 +12,7 @@ const Header: React.FC = () => {
         <div className="h-10 w-10 rounded-full relative border-2 border-gray-400">
           <img
             className="h-full w-full rounded-full"
-            src="https://loremfaces.net/96/id/1.jpg"
+            src="https://loremfaces.net/96/id/2.jpg"
           />
           <div className="absolute bottom-0 right-0 bg-green-600 rounded-full w-3 h-3 border-2 border-white"></div>
         </div>

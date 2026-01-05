@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import settingReducer from "../features/theme/themeSlice";
 import eventReducer from "../features/events/eventSlice";
-import appReducer from "@/features/state";
+import appReducer from "@/state";
 import { baseApi } from "@/api";
 
 export const store = configureStore({

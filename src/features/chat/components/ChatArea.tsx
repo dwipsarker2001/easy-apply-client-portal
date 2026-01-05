@@ -1,19 +1,18 @@
 import React, { useEffect, useRef } from "react";
 import TextMessage from "@/components/TextMessage";
-import { setMediaFrom } from "@/features/state";
+import { setMediaFrom } from "@/state";
 import { useAppDispatch, useAppSelector } from "@/hooks";
-import chatBackground from "@/assets/chat-background.svg";
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { mediaFrom } = useAppSelector((state) => state.app);
+  const { mediaFrom, chat } = useAppSelector((state) => state.app);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  // Auto-scroll to bottom on mount
+  // Auto-scroll to bottom when chat changes
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
+  }, [chat]);
 
   const isMediaOpen = Boolean(mediaFrom);
 
@@ -31,12 +30,47 @@ const ChatArea: React.FC = () => {
       )}
 
       {/* Chat content */}
-      <div className="relative flex flex-col h-full overflow-y-auto px-5">
-        <TextMessage message="Message One" />
+      <div className="relative z-20 flex flex-col h-full overflow-y-auto px-5 pt-4 gap-3">
+        {chat.map((item) => {
+          if (item.type === "text") {
+            return (
+              <TextMessage
+                key={item.id}
+                message={item.content}
+                direction={item.direction}
+              />
+            );
+          }
 
-        {Array.from({ length: 40 }).map((_, index) => (
-          <TextMessage key={index} message="Message One" type="sent" />
-        ))}
+          if (item.type === "file") {
+            const isImage = item.file.type.startsWith("image/");
+            const fileURL = URL.createObjectURL(item.file);
+
+            return (
+              <div key={item.id} className="self-end max-w-[240px]">
+                {isImage ? (
+                  <img
+                    src={fileURL}
+                    alt={item.file.name}
+                    className="rounded-xl shadow-md"
+                    onLoad={() => URL.revokeObjectURL(fileURL)}
+                  />
+                ) : (
+                  <a
+                    href={fileURL}
+                    download={item.file.name}
+                    className="block bg-white p-3 rounded-xl text-blue-600 text-sm shadow-md truncate"
+                    onClick={() => URL.revokeObjectURL(fileURL)}
+                  >
+                    📄 {item.file.name}
+                  </a>
+                )}
+              </div>
+            );
+          }
+
+          return null;
+        })}
 
         <div ref={chatEndRef} />
       </div>

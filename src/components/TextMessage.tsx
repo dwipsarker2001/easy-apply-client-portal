@@ -2,15 +2,18 @@ import React from "react";
 
 interface PropsType {
   message: string;
-  type?: "sent" | "received";
+  direction?: "sent" | "received";
 }
 
-const TextMessage: React.FC<PropsType> = ({ message, type = "received" }) => {
+const TextMessage: React.FC<PropsType> = ({
+  message,
+  direction = "received",
+}) => {
   return (
-    <div className={type === "sent" ? "flex flex-row-reverse" : "flex"}>
+    <div className={direction === "sent" ? "flex flex-row-reverse" : "flex"}>
       <div
         className={
-          type === "sent" ? "bg-slate-700 p-2 text-white" : "bg-white p-2"
+          direction === "sent" ? "bg-slate-700 p-2 text-white" : "bg-white p-2"
         }
       >
         {message}

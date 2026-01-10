@@ -1,14 +1,15 @@
-import { ChatItem } from "@/types";
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { ChatItem } from '@/types';
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 /*----------------------------------
   Initial State Type Definition
 ----------------------------------*/
 interface InitialStateType {
   loginSheet: boolean;
-  mediaFrom: "storage" | "camera" | null;
+  mediaFrom: 'storage' | 'camera' | null;
   chat: ChatItem[];
 }
+
 /*----------------------------------
   Initial State
 ----------------------------------*/
@@ -23,34 +24,34 @@ const initialState: InitialStateType = {
 ----------------------------------*/
 
 const appSlice = createSlice({
-  name: "easy-apply-client-portal",
+  name: 'easy-apply-client-portal',
   initialState,
   reducers: {
     setLoginSheet(state, action: PayloadAction<boolean>) {
       state.loginSheet = action.payload;
     },
 
-    setMediaFrom(state, action: PayloadAction<"storage" | "camera" | null>) {
+    setMediaFrom(state, action: PayloadAction<'storage' | 'camera' | null>) {
       state.mediaFrom =
         state.mediaFrom === action.payload ? null : action.payload;
     },
 
     addMessage(state, action: PayloadAction<string>) {
       state.chat.push({
-        id: crypto.randomUUID(),
-        type: "text",
+        id: Date.now().toString(),
+        type: 'text',
         content: action.payload,
-        direction: "received",
+        direction: 'sent',
       });
     },
 
     addFiles(state, action: PayloadAction<File[]>) {
-      action.payload.forEach((file) => {
+      action.payload.forEach(file => {
         state.chat.push({
           id: crypto.randomUUID(),
-          type: "file",
+          type: 'file',
           file,
-          direction: "sent",
+          direction: 'sent',
         });
       });
     },

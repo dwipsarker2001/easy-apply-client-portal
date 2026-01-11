@@ -48,7 +48,7 @@ const appSlice = createSlice({
     addFiles(state, action: PayloadAction<File[]>) {
       action.payload.forEach(file => {
         state.chat.push({
-          id: crypto.randomUUID(),
+          id: Date.now().toString(),
           type: 'file',
           file,
           direction: 'sent',

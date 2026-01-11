@@ -10,13 +10,13 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useState } from 'react';
 import { useDocumentUpload } from '../hooks';
+import MediaPreview from './MediaPreview';
 
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const mediaFrom = useAppSelector(state => state.app.mediaFrom);
   const { uploadDocument, isLoading } = useDocumentUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
   const [textValue, setTextValue] = useState('');
 
   // Handle text input
@@ -24,47 +24,63 @@ const InputArea: React.FC = () => {
     setTextValue(e.target.value);
   };
 
-  // Handle sending a message
-  const handleSendMessage = () => {
-    if (textValue.trim() === '') return;
-    dispatch(addMessage(textValue.trim()));
-    setTextValue(''); // clear input
-    dispatch(setMediaFrom(null)); // close media/document selector
-  };
+  // Handle sending a message with or without file
+  const handleSendMessage = async () => {
+    // If there's a file, upload it
+    if (selectedFile) {
+      const formData = new FormData();
+      formData.append('file', selectedFile);
 
-  // Handle file input for document upload only
-  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files || files.length === 0) return;
+      try {
+        // Call RTK Query mutation
+        // await uploadDocument(formData);
 
-    const file = files[0]; // only handle the first file
-    setSelectedFile(file);
-    const formData = new FormData();
-    formData.append('file', file);
+        // Store file in Redux if needed
+        dispatch(addFiles([selectedFile]));
 
-    try {
-      // Call RTK Query mutation
-      // await uploadDocument(formData);
+        // Optionally send text message along with file
+        if (textValue.trim()) {
+          dispatch(addMessage(textValue.trim()));
+        }
 
-      // Optionally store file in Redux if needed
-      dispatch(addFiles([file]));
+        // Clear everything
+        setSelectedFile(null);
+        setTextValue('');
+        dispatch(setMediaFrom(null));
+      } catch (err) {
+        console.error('Document upload failed:', err);
+      }
+    }
+    // If there's only text, send the message
+    else if (textValue.trim()) {
+      dispatch(addMessage(textValue.trim()));
+      setTextValue('');
       dispatch(setMediaFrom(null));
-    } catch (err) {
-      console.error('Document upload failed:', err);
-    } finally {
-      e.target.value = ''; // reset input
     }
   };
 
-  // Determine if we are in "typing mode"
+  // Handle file selection (just set the file, don't upload yet)
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const file = files[0];
+    setSelectedFile(file);
+    dispatch(setMediaFrom(null)); // Close the media selector
+
+    e.target.value = ''; // Reset input for re-selection
+  };
+
+  // Determine if we are in "typing mode" or have a file
   const isTyping = textValue.trim().length > 0;
+  const hasContent = isTyping || selectedFile;
 
   return (
     <div className="absolute bottom-0 w-screen z-99 px-3 flex flex-col gap-2 pb-4">
       {/* -------------------------------------
               Input Sheet Area 
       -------------------------------------- */}
-      {!isTyping && mediaFrom && (
+      {!isTyping && !selectedFile && mediaFrom && (
         <div className={`bg-white rounded-4xl p-6`}>
           <h1 className="font-semibold text-xl text-slate-600 mb-2">
             ডকুমেন্টের ধরন
@@ -105,21 +121,19 @@ const InputArea: React.FC = () => {
             id="master-input"
             type="file"
             className="hidden"
-            accept=".pdf,.doc,.docx" // optional: allow only document files
+            accept=".pdf,.doc,.docx,image/*" // Allow documents and images
           />
         </div>
       )}
+
+      {/* File Preview */}
       {selectedFile && (
-        <div className="mt-4 bg-gray-100 p-3 rounded-lg flex items-center gap-3">
-          <HugeiconsIcon icon={GoogleDocFreeIcons} />
-          <div className="text-sm">
-            <p className="font-medium">{selectedFile.name}</p>
-            <p className="text-gray-500">
-              {(selectedFile.size / 1024 / 1024).toFixed(2)} MB
-            </p>
-          </div>
-        </div>
+        <MediaPreview
+          file={selectedFile}
+          onRemove={() => setSelectedFile(null)}
+        />
       )}
+
       {/* ------------------------------------
                   Message Input Area 
       --------------------------------------- */}
@@ -134,8 +148,8 @@ const InputArea: React.FC = () => {
             onClick={() => dispatch(setMediaFrom(null))}
           />
 
-          {/* Camera button */}
-          {!isTyping && (
+          {/* Camera button - hide when typing or file selected */}
+          {!hasContent && (
             <button onClick={() => dispatch(setMediaFrom('camera'))}>
               <HugeiconsIcon icon={Camera01FreeIcons} />
             </button>
@@ -143,10 +157,11 @@ const InputArea: React.FC = () => {
         </div>
 
         {/* Conditional buttons: Send or Document */}
-        {isTyping ? (
+        {hasContent ? (
           <button
             onClick={handleSendMessage}
-            className="py-2 bg-blue-600 text-white h-14 w-14 rounded-full grid place-content-center"
+            disabled={isLoading}
+            className="py-2 bg-slate-800 text-white h-14 w-14 rounded-full grid place-content-center disabled:opacity-50"
           >
             <HugeiconsIcon icon={SentFreeIcons} />
           </button>

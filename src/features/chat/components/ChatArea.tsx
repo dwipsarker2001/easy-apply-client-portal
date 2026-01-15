@@ -1,10 +1,8 @@
+import FileMessage from '@/features/chat/components/FileMessage';
 import TextMessage from '@/components/TextMessage';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import { setMediaFrom } from '@/state';
-import { TickDouble01Icon } from '@hugeicons/core-free-icons';
-import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
-import SendInfo from './SendingInfo';
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -46,31 +44,12 @@ const ChatArea: React.FC = () => {
           }
 
           if (item.type === 'file') {
-            const isImage = item.file.type.startsWith('image/');
-            const fileURL = URL.createObjectURL(item.file);
-
             return (
-              <div key={item.id} className="self-end max-w-[240px] relative">
-                {isImage ? (
-                  <img
-                    src={fileURL}
-                    alt={item.file.name}
-                    className="rounded-xl shadow-md max-w-40"
-                    onLoad={() => URL.revokeObjectURL(fileURL)}
-                  />
-                ) : (
-                  <a
-                    href={fileURL}
-                    download={item.file.name}
-                    className="block bg-white p-3 text-blue-600 text-sm truncate"
-                    onClick={() => URL.revokeObjectURL(fileURL)}
-                  >
-                    📄 {item.file.name}
-                  </a>
-                )}
-                {/* Sending Info */}
-                <SendInfo />
-              </div>
+              <FileMessage
+                key={item.id}
+                file={item.file}
+                direction={item.direction}
+              />
             );
           }
 

@@ -10,6 +10,7 @@ interface FilePreviewProps {
 
 const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
   const fileType = file.type;
+  console.log(fileType);
   const isImage = fileType.startsWith('image/');
   const isPDF = fileType === 'application/pdf';
 
@@ -45,7 +46,7 @@ const FilePreview: React.FC<FilePreviewProps> = ({ file, onRemove }) => {
         </div>
       )}
 
-      <p className="text-sm text-gray-600 mt-2">{file.name}</p>
+      <p className="text-sm text-gray-600 mt-2 truncate">{file.name}</p>
     </div>
   );
 };

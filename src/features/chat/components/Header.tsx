@@ -1,8 +1,12 @@
-import { MoreVerticalFreeIcons } from "@hugeicons/core-free-icons";
-import { HugeiconsIcon } from "@hugeicons/react";
-import React from "react";
+import { useAppSelector } from '@/hooks';
+import { MoreVerticalFreeIcons } from '@hugeicons/core-free-icons';
+import { HugeiconsIcon } from '@hugeicons/react';
+import React, { useState } from 'react';
+import HeaderMenu from './HeaderMenu';
 
 const Header: React.FC = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const userInfo = useAppSelector(state => state.app.userInfo);
   return (
     <header className=" bg-white flex items-center  justify-between p-4 ">
       {/*-------------------------------------
@@ -25,9 +29,15 @@ const Header: React.FC = () => {
       {/*-------------------------------------
              More Options Button 
         -------------------------------------*/}
-      <button>
-        <HugeiconsIcon icon={MoreVerticalFreeIcons} />
+      <button
+        onClick={() => setIsMenuOpen(!isMenuOpen)}
+        className="p-2 hover:bg-gray-100 rounded-full transition-colors active:scale-95"
+      >
+        <HugeiconsIcon icon={MoreVerticalFreeIcons} size={24} />
       </button>
+
+      {/* Menu */}
+      <HeaderMenu isOpen={isMenuOpen} onClose={() => setIsMenuOpen(false)} />
     </header>
   );
 };

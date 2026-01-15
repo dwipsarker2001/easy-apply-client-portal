@@ -14,10 +14,12 @@ import MediaPreview from './MediaPreview';
 
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
-  const mediaFrom = useAppSelector(state => state.app.mediaFrom);
+  const { mediaFrom, loginSheet } = useAppSelector(state => state.app);
   const { uploadDocument, isLoading } = useDocumentUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textValue, setTextValue] = useState('');
+
+  if (loginSheet) return;
 
   // Handle text input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

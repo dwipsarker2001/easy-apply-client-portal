@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import settingReducer from "../features/theme/themeSlice";
 import eventReducer from "../features/events/eventSlice";
+import clientReducer from "@/state/clientSlice";
 import appReducer from "@/state";
 import { baseApi } from "@/api";
 
@@ -9,6 +10,7 @@ export const store = configureStore({
     theme: settingReducer,
     events: eventReducer,
     app: appReducer,
+    client: clientReducer,
     [baseApi.reducerPath]: baseApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>

@@ -37,7 +37,7 @@ export const bookApi = baseApi.injectEndpoints({
     -------------------------------------- */
     uploadDocument: builder.mutation<{ status: boolean }, FormData>({
       query: (formData) => ({
-        url: "/client/upload-document",
+        url: "/client/uploads",
         method: "POST",
         body: formData,
       }),

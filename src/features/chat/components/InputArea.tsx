@@ -8,7 +8,7 @@ import {
   SignatureFreeIcons,
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDocumentUpload } from '../hooks';
 import MediaPreview from './MediaPreview';
 
@@ -18,6 +18,7 @@ const InputArea: React.FC = () => {
   const { uploadDocument, isLoading } = useDocumentUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textValue, setTextValue] = useState('');
+ const [clientId, setClientId] = useState<number | null>(null);
 
   // Handle text input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,11 +30,12 @@ const InputArea: React.FC = () => {
     // If there's a file, upload it
     if (selectedFile) {
       const formData = new FormData();
-      formData.append('file', selectedFile);
+      formData.append('files', selectedFile);
+      formData.append('clientId', String(clientId)); 
 
       try {
         // Call RTK Query mutation
-        // await uploadDocument(formData);
+        await uploadDocument(formData);
 
         // Store file in Redux if needed
         dispatch(addFiles([selectedFile]));
@@ -74,6 +76,16 @@ const InputArea: React.FC = () => {
   // Determine if we are in "typing mode" or have a file
   const isTyping = textValue.trim().length > 0;
   const hasContent = isTyping || selectedFile;
+
+   // -------------------
+  // Get client Id
+  // -------------------
+ useEffect(() => {
+  const storedClientId = localStorage.getItem("clientId");
+  if (storedClientId) {
+    setClientId(Number(storedClientId));
+  }
+}, []);
 
   return (
     <div className="absolute bottom-0 w-screen z-99 px-3 flex flex-col gap-2 pb-4">

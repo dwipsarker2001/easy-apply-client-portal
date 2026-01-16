@@ -15,6 +15,17 @@ const BottomSheet: React.FC = () => {
   const [errors, setErrors] = useState({ fullName: '', phoneNumber: '' });
   const [register, { isLoading, error, isSuccess }] = useRegisterMutation();
 
+  // -------------------
+  // Auto Reopen if registration failed
+  // -------------------
+  useEffect(() => {
+    const clientId = localStorage.getItem('clientId');
+    if (!clientId && !loginSheet) {
+      // Reopen sheet if clientId not stored
+      dispatch(setLoginSheet(true));
+    }
+  }, [loginSheet, dispatch]);
+
   const validateForm = (): boolean => {
     const newErrors = { fullName: '', phoneNumber: '' };
     let isValid = true;
@@ -62,17 +73,6 @@ const BottomSheet: React.FC = () => {
       }
     }
   };
-
-  // -------------------
-  // Auto Reopen if registration failed
-  // -------------------
-  useEffect(() => {
-    const clientId = localStorage.getItem('clientId');
-    if (!clientId && !loginSheet) {
-      // Reopen sheet if clientId not stored
-      dispatch(setLoginSheet(true));
-    }
-  }, [loginSheet, dispatch]);
 
   return (
     <>
@@ -172,7 +172,7 @@ const BottomSheet: React.FC = () => {
 
             {/* Error */}
             {error && (
-              <p className="text-sm text-red-500 animate-pulse">
+              <p className="text-sm text-red-500 animate-pulse mb-2 pl-2">
                 Registration failed. Please try again.
               </p>
             )}

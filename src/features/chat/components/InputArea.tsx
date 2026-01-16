@@ -18,7 +18,17 @@ const InputArea: React.FC = () => {
   const { uploadDocument, isLoading } = useDocumentUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textValue, setTextValue] = useState('');
- const [clientId, setClientId] = useState<number | null>(null);
+  const [clientId, setClientId] = useState<number | null>(null);
+
+  // -------------------
+  // Get client Id
+  // -------------------
+  useEffect(() => {
+    const storedClientId = localStorage.getItem('clientId');
+    if (storedClientId) {
+      setClientId(Number(storedClientId));
+    }
+  }, []);
 
   if (loginSheet) return;
 
@@ -33,7 +43,7 @@ const InputArea: React.FC = () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('files', selectedFile);
-      formData.append('clientId', String(clientId)); 
+      formData.append('clientId', String(clientId));
 
       try {
         // Call RTK Query mutation
@@ -78,16 +88,6 @@ const InputArea: React.FC = () => {
   // Determine if we are in "typing mode" or have a file
   const isTyping = textValue.trim().length > 0;
   const hasContent = isTyping || selectedFile;
-
-   // -------------------
-  // Get client Id
-  // -------------------
- useEffect(() => {
-  const storedClientId = localStorage.getItem("clientId");
-  if (storedClientId) {
-    setClientId(Number(storedClientId));
-  }
-}, []);
 
   return (
     <div className="absolute bottom-0 w-screen z-99 px-3 flex flex-col gap-2 pb-4">

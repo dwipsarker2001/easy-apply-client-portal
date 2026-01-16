@@ -1,8 +1,10 @@
+import { useRegisterMutation } from '@/features/auth/api';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { login, setLoginSheet } from '@/state';
+import { setLoginSheet } from '@/state';
+import { setClientId } from '@/state/clientSlice';
 import { SmartPhone01Icon, UserIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 const BottomSheet: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -11,6 +13,7 @@ const BottomSheet: React.FC = () => {
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState({ fullName: '', phoneNumber: '' });
+  const [register, { isLoading, error, isSuccess }] = useRegisterMutation();
 
   const validateForm = (): boolean => {
     const newErrors = { fullName: '', phoneNumber: '' };
@@ -39,28 +42,37 @@ const BottomSheet: React.FC = () => {
     return isValid;
   };
 
-  const handleLogin = () => {
+  /* -------------------
+       Handle submit
+   ------------------- */
+  const handleSubmit = async (e: React.FormEvent) => {
     if (validateForm()) {
-      dispatch(
-        login({
-          fullName: fullName.trim(),
-          phoneNumber: phoneNumber.trim(),
-        })
-      );
-      dispatch(setLoginSheet(false));
+      e.preventDefault();
 
-      // Reset form
-      setFullName('');
-      setPhoneNumber('');
-      setErrors({ fullName: '', phoneNumber: '' });
+      if (!fullName || !phoneNumber) return;
+
+      try {
+        const res = await register({ fullName, phoneNumber }).unwrap();
+        dispatch(setClientId(res.data.clientId));
+        dispatch(setLoginSheet(false));
+        setFullName('');
+        setPhoneNumber('');
+      } catch (err) {
+        console.error('Registration failed', err);
+      }
     }
   };
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleLogin();
+  // -------------------
+  // Auto Reopen if registration failed
+  // -------------------
+  useEffect(() => {
+    const clientId = localStorage.getItem('clientId');
+    if (!clientId && !loginSheet) {
+      // Reopen sheet if clientId not stored
+      dispatch(setLoginSheet(true));
     }
-  };
+  }, [loginSheet, dispatch]);
 
   return (
     <>
@@ -94,78 +106,92 @@ const BottomSheet: React.FC = () => {
 
         {/* Form */}
         <div className="px-6 pb-8">
-          {/* Full Name Input */}
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              নাম*
-            </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <HugeiconsIcon icon={UserIcon} size={20} />
+          <form onSubmit={handleSubmit}>
+            {/* Full Name Input */}
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                নাম*
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <HugeiconsIcon icon={UserIcon} size={20} />
+                </div>
+                <input
+                  type="text"
+                  value={fullName}
+                  onChange={e => {
+                    setFullName(e.target.value);
+                    if (errors.fullName) setErrors({ ...errors, fullName: '' });
+                  }}
+                  placeholder="আপনার পুরো নাম লিখুন "
+                  className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                    errors.fullName
+                      ? 'border-red-500 focus:ring-red-200'
+                      : 'border-gray-300 focus:ring-blue-200 focus:border-blue-500'
+                  }`}
+                />
               </div>
-              <input
-                type="text"
-                value={fullName}
-                onChange={e => {
-                  setFullName(e.target.value);
-                  if (errors.fullName) setErrors({ ...errors, fullName: '' });
-                }}
-                onKeyPress={handleKeyPress}
-                placeholder="আপনার পুরো নাম লিখুন "
-                className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                  errors.fullName
-                    ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-200 focus:border-blue-500'
-                }`}
-              />
+              {errors.fullName && (
+                <p className="text-red-500 text-xs mt-1 ml-1">
+                  {errors.fullName}
+                </p>
+              )}
             </div>
-            {errors.fullName && (
-              <p className="text-red-500 text-xs mt-1 ml-1">
-                {errors.fullName}
+
+            {/* Phone Number Input */}
+            <div className="mb-6">
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                মোবাইল*
+              </label>
+              <div className="relative">
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
+                  <HugeiconsIcon icon={SmartPhone01Icon} />
+                </div>
+                <input
+                  type="tel"
+                  value={phoneNumber}
+                  onChange={e => {
+                    setPhoneNumber(e.target.value);
+                    if (errors.phoneNumber)
+                      setErrors({ ...errors, phoneNumber: '' });
+                  }}
+                  placeholder="মোবাইল নম্বর লিখুন "
+                  className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
+                    errors.phoneNumber
+                      ? 'border-red-500 focus:ring-red-200'
+                      : 'border-gray-300 focus:ring-blue-200 focus:border-blue-500'
+                  }`}
+                />
+              </div>
+              {errors.phoneNumber && (
+                <p className="text-red-500 text-xs mt-1 ml-1">
+                  {errors.phoneNumber}
+                </p>
+              )}
+            </div>
+
+            {/* Error */}
+            {error && (
+              <p className="text-sm text-red-500 animate-pulse">
+                Registration failed. Please try again.
               </p>
             )}
-          </div>
 
-          {/* Phone Number Input */}
-          <div className="mb-6">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              মোবাইল*
-            </label>
-            <div className="relative">
-              <div className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">
-                <HugeiconsIcon icon={SmartPhone01Icon} />
-              </div>
-              <input
-                type="tel"
-                value={phoneNumber}
-                onChange={e => {
-                  setPhoneNumber(e.target.value);
-                  if (errors.phoneNumber)
-                    setErrors({ ...errors, phoneNumber: '' });
-                }}
-                onKeyPress={handleKeyPress}
-                placeholder="মোবাইল নম্বর লিখুন "
-                className={`w-full pl-11 pr-4 py-3 border rounded-xl focus:outline-none focus:ring-2 transition-all ${
-                  errors.phoneNumber
-                    ? 'border-red-500 focus:ring-red-200'
-                    : 'border-gray-300 focus:ring-blue-200 focus:border-blue-500'
-                }`}
-              />
-            </div>
-            {errors.phoneNumber && (
-              <p className="text-red-500 text-xs mt-1 ml-1">
-                {errors.phoneNumber}
+            {/* Submit Button */}
+            <button
+              disabled={isLoading}
+              type="submit"
+              className="w-full bg-slate-700 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 active:scale-[0.98] transition-all shadow-md"
+            >
+              {isLoading ? 'সাবমিট...' : 'সাবমিট'}
+            </button>
+            {/* Success */}
+            {isSuccess && (
+              <p className="text-sm text-green-600 font-medium animate-pulse">
+                Client registered successfully!
               </p>
             )}
-          </div>
-
-          {/* Submit Button */}
-          <button
-            onClick={handleLogin}
-            className="w-full bg-slate-700 text-white py-3.5 rounded-xl font-semibold hover:bg-slate-800 active:scale-[0.98] transition-all shadow-md"
-          >
-            সাবমিট
-          </button>
+          </form>
         </div>
       </div>
     </>

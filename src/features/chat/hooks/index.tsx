@@ -15,6 +15,7 @@ export const useDocumentUpload = () => {
   const handleUpload = async (formData: FormData) => {
     try {
       const result = await uploadDocument(formData).unwrap();
+      console.log(result,'this is result');
       toast.success("Document uploaded successfully!");
       return result;
     } catch (err) {

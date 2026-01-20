@@ -11,6 +11,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useState } from 'react';
 import { useDocumentUpload } from '../hooks';
 import MediaPreview from './MediaPreview';
+import { sendChatMessage } from '@/socket/chatSocket';
 
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -19,6 +20,17 @@ const InputArea: React.FC = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textValue, setTextValue] = useState('');
  const [clientId, setClientId] = useState<number | null>(null);
+ const [roomId, setRoomId] = useState<string>("");
+
+
+  useEffect(() => {
+    const storedClientId = localStorage.getItem("clientId");
+    if (storedClientId) {
+      const id = Number(storedClientId);
+      setClientId(id);
+      setRoomId(`client_${id}`);
+    }
+  }, []);
 
   // Handle text input
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -36,6 +48,15 @@ const InputArea: React.FC = () => {
       try {
         // Call RTK Query mutation
         await uploadDocument(formData);
+
+
+        //  sendChatMessage({
+        //   roomId,
+        //   clientId,
+        //   message: textValue || "📎 File shared",
+        //   type: "file",
+        //   fileUrl: res?.data?.url,
+        // });
 
         // Store file in Redux if needed
         dispatch(addFiles([selectedFile]));
@@ -56,6 +77,12 @@ const InputArea: React.FC = () => {
     // If there's only text, send the message
     else if (textValue.trim()) {
       dispatch(addMessage(textValue.trim()));
+      sendChatMessage({
+        roomId,
+        clientId: clientId!,
+        message: textValue.trim(),
+        type: "text",
+      });
       setTextValue('');
       dispatch(setMediaFrom(null));
     }

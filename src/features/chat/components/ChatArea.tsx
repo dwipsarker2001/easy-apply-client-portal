@@ -1,10 +1,11 @@
 import TextMessage from '@/components/TextMessage';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { setMediaFrom } from '@/state';
+import { addMessage, setMediaFrom } from '@/state';
 import { TickDouble01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
 import SendInfo from './SendingInfo';
+import { socket } from '@/socket/socket';
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -18,6 +19,55 @@ const ChatArea: React.FC = () => {
   }, [chat]);
 
   const isMediaOpen = Boolean(mediaFrom);
+
+  useEffect(() => {
+    // Connect socket
+    socket.connect();
+
+    // Listen for incoming messages
+    socket.on("receive_message", (msg) => {
+      dispatch(addMessage(msg));
+    });
+
+    return () => {
+      socket.off("receive_message");
+      socket.disconnect();
+    };
+  }, [dispatch]);
+
+
+//   useEffect(() => {
+//   socket.on("connect", () => {
+//     console.log("✅ Frontend connected with socket id:", socket.id);
+//   });
+
+//   socket.on("disconnect", () => {
+//     console.log("❌ Frontend disconnected");
+//   });
+
+//   socket.on("receive_message", (msg) => {
+//     console.log("💬 Received message:", msg);
+//   });
+
+//   return () => {
+//     socket.off("connect");
+//     socket.off("disconnect");
+//     socket.off("receive_message");
+//   };
+// }, []);
+
+
+useEffect(() => {
+  
+  socket.connect();
+
+  socket.on("connect", () => console.log("✅ Connected!", socket.id));
+  socket.on("connect_error", (err) => console.error("❌ Connect error:", err));
+  socket.on("receive_message", (msg) => console.log("💬 Message received:", msg));
+
+  return () => socket.disconnect();
+}, []);
+
 
   return (
     <main className="relative flex-grow overflow-hidden pb-[80px] bg-[#EFEEF3]">

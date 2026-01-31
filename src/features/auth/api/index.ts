@@ -11,7 +11,7 @@ export interface ClientType {
 }
 
 export type RegisterPayload = {
-  fullName: string;
+  name: string;
   phoneNumber: string;
 };
 

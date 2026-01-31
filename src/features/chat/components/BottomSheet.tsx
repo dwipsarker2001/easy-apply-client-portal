@@ -63,7 +63,7 @@ const BottomSheet: React.FC = () => {
       if (!fullName || !phoneNumber) return;
 
       try {
-        const res = await register({ fullName, phoneNumber }).unwrap();
+        const res = await register({ name: fullName, phoneNumber }).unwrap();
         dispatch(setClientId(res.data.clientId));
         dispatch(setLoginSheet(false));
         setFullName('');

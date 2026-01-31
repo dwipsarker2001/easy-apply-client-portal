@@ -6,10 +6,12 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
 import SendInfo from './SendingInfo';
 import { socket } from '@/socket/socket';
+import { registerChatListeners } from '@/socket/listeners';
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const { mediaFrom, chat } = useAppSelector(state => state.app);
+  const { clientId } = useAppSelector(state => state.client);
 
   const chatEndRef = useRef<HTMLDivElement>(null);
 
@@ -20,54 +22,36 @@ const ChatArea: React.FC = () => {
 
   const isMediaOpen = Boolean(mediaFrom);
 
+  // Initialize socket connection and listeners
   useEffect(() => {
     // Connect socket
     socket.connect();
 
-    // Listen for incoming messages
-    socket.on("receive_message", (msg) => {
-      dispatch(addMessage(msg));
+    // Register chat listeners
+    registerChatListeners(dispatch);
+
+    // Join room and load messages
+    if (clientId) {
+      const roomId = `client_${clientId}`;
+      socket.emit('join_room', { roomId });
+      socket.emit('load_messages', { roomId });
+    }
+
+    // Connection logs
+    socket.on('connect', () => {
+      console.log(' Connected!', socket.id);
+    });
+
+    socket.on('connect_error', err => {
+      console.error('❌ Connect error:', err);
     });
 
     return () => {
-      socket.off("receive_message");
+      socket.off('connect');
+      socket.off('connect_error');
       socket.disconnect();
     };
-  }, [dispatch]);
-
-
-//   useEffect(() => {
-//   socket.on("connect", () => {
-//     console.log("✅ Frontend connected with socket id:", socket.id);
-//   });
-
-//   socket.on("disconnect", () => {
-//     console.log("❌ Frontend disconnected");
-//   });
-
-//   socket.on("receive_message", (msg) => {
-//     console.log("💬 Received message:", msg);
-//   });
-
-//   return () => {
-//     socket.off("connect");
-//     socket.off("disconnect");
-//     socket.off("receive_message");
-//   };
-// }, []);
-
-
-useEffect(() => {
-  
-  socket.connect();
-
-  socket.on("connect", () => console.log("✅ Connected!", socket.id));
-  socket.on("connect_error", (err) => console.error("❌ Connect error:", err));
-  socket.on("receive_message", (msg) => console.log("💬 Message received:", msg));
-
-  return () => socket.disconnect();
-}, []);
-
+  }, [dispatch, clientId]);
 
   return (
     <main className="relative flex-grow overflow-hidden pb-[80px] bg-[#EFEEF3]">

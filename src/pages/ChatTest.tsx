@@ -12,13 +12,15 @@ const ChatTest: React.FC = () => {
   const [message, setMessage] = useState("");
   const [messages, setMessages] = useState<any[]>([]);
 
+
+  // Initialize socket connection and event handlers
   useEffect(() => {
     socket = io("http://localhost:8080", {
       transports: ["websocket"],
     });
 
     socket.on("connect", () => {
-      console.log("✅ Connected:", socket.id);
+      console.log("Connected:", socket.id);
       setConnected(true);
 
       socket.emit("join_room", { roomId });
@@ -42,6 +44,8 @@ const ChatTest: React.FC = () => {
     };
   }, [roomId]);
 
+
+  // Function to send a message
   const sendMessage = () => {
     if (!message.trim()) return;
 

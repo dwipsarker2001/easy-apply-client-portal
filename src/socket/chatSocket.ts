@@ -7,6 +7,8 @@ export const joinRoom = (roomId: string) => {
 export const sendChatMessage = (payload: {
   roomId: string;
   clientId: number;
+  userId: string;
+  senderRole: "client" | "user";
   message: string;
   type?: "text" | "file";
   fileUrl?: string;

@@ -8,8 +8,8 @@ import ChatTest from "@/pages/ChatTest";
 const routes = createBrowserRouter([
   {
     path: "/",
-    // element: <ChatPage />,
-    element:<ChatTest />
+    element: <ChatPage />,
+    // element:<ChatTest />
   },
 ]);
 

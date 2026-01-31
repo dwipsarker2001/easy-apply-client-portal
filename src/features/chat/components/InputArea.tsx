@@ -19,16 +19,27 @@ const InputArea: React.FC = () => {
   const { uploadDocument, isLoading } = useDocumentUpload();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [textValue, setTextValue] = useState('');
- const [clientId, setClientId] = useState<number | null>(null);
- const [roomId, setRoomId] = useState<string>("");
-
+  const [clientId, setClientId] = useState<number | null>(null);
+  const [roomId, setRoomId] = useState<string>('');
+  const [userId, setUserId] = useState<string>('');
 
   useEffect(() => {
-    const storedClientId = localStorage.getItem("clientId");
+    const storedClientId = localStorage.getItem('clientId');
     if (storedClientId) {
       const id = Number(storedClientId);
       setClientId(id);
       setRoomId(`client_${id}`);
+    }
+
+    // Get userId from authUser or directly from localStorage
+    const authUser = localStorage.getItem('authUser');
+    if (authUser) {
+      try {
+        const user = JSON.parse(authUser);
+        setUserId(user._id || user.id || '');
+      } catch {
+        setUserId('');
+      }
     }
   }, []);
 
@@ -43,20 +54,21 @@ const InputArea: React.FC = () => {
     if (selectedFile) {
       const formData = new FormData();
       formData.append('files', selectedFile);
-      formData.append('clientId', String(clientId)); 
+      formData.append('clientId', String(clientId));
 
       try {
         // Call RTK Query mutation
-        await uploadDocument(formData);
+        const res = await uploadDocument(formData);
 
-
-        //  sendChatMessage({
-        //   roomId,
-        //   clientId,
-        //   message: textValue || "📎 File shared",
-        //   type: "file",
-        //   fileUrl: res?.data?.url,
-        // });
+        sendChatMessage({
+          roomId,
+          clientId: clientId!,
+          userId,
+          senderRole: 'client',
+          message: textValue || '📎 File shared',
+          type: 'file',
+          fileUrl: res?.data?.url,
+        });
 
         // Store file in Redux if needed
         dispatch(addFiles([selectedFile]));
@@ -80,8 +92,10 @@ const InputArea: React.FC = () => {
       sendChatMessage({
         roomId,
         clientId: clientId!,
+        userId,
+        senderRole: 'client',
         message: textValue.trim(),
-        type: "text",
+        type: 'text',
       });
       setTextValue('');
       dispatch(setMediaFrom(null));
@@ -104,15 +118,15 @@ const InputArea: React.FC = () => {
   const isTyping = textValue.trim().length > 0;
   const hasContent = isTyping || selectedFile;
 
-   // -------------------
+  // -------------------
   // Get client Id
   // -------------------
- useEffect(() => {
-  const storedClientId = localStorage.getItem("clientId");
-  if (storedClientId) {
-    setClientId(Number(storedClientId));
-  }
-}, []);
+  useEffect(() => {
+    const storedClientId = localStorage.getItem('clientId');
+    if (storedClientId) {
+      setClientId(Number(storedClientId));
+    }
+  }, []);
 
   return (
     <div className="absolute bottom-0 w-screen z-99 px-3 flex flex-col gap-2 pb-4">

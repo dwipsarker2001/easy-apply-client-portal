@@ -36,14 +36,9 @@ const appSlice = createSlice({
         state.mediaFrom === action.payload ? null : action.payload;
     },
 
-    addMessage(state, action: PayloadAction<string>) {
-      state.chat.push({
-        id: Date.now().toString(),
-        type: 'text',
-        content: action.payload,
-        direction: 'sent',
-      });
-    },
+    addMessage(state, action: PayloadAction<ChatItem>) {
+  state.chat.push(action.payload);
+},
 
     addFiles(state, action: PayloadAction<File[]>) {
       action.payload.forEach(file => {
@@ -56,6 +51,10 @@ const appSlice = createSlice({
       });
     },
 
+    setMessages(state, action: PayloadAction<ChatItem[]>) {
+      state.chat = action.payload;
+    },
+
     clearChat(state) {
       state.chat = [];
     },
@@ -65,7 +64,7 @@ const appSlice = createSlice({
 /*----------------------------------
   Exports
 ----------------------------------*/
-export const { setLoginSheet, setMediaFrom, addMessage, addFiles, clearChat } =
+export const { setLoginSheet, setMediaFrom, addMessage, addFiles, setMessages, clearChat } =
   appSlice.actions;
 
 export default appSlice.reducer;

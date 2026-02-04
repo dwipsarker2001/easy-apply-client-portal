@@ -1,4 +1,4 @@
-import { ChatItem } from '@/types';
+import { ChatItem, ChatTextItem } from '@/types';
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 /*----------------------------------
@@ -36,9 +36,9 @@ const appSlice = createSlice({
         state.mediaFrom === action.payload ? null : action.payload;
     },
 
-    addMessage(state, action: PayloadAction<ChatItem>) {
-  state.chat.push(action.payload);
-},
+    addMessage(state, action: PayloadAction<ChatTextItem>) {
+      state.chat.push(action.payload);
+    },
 
     addFiles(state, action: PayloadAction<File[]>) {
       action.payload.forEach(file => {
@@ -64,7 +64,13 @@ const appSlice = createSlice({
 /*----------------------------------
   Exports
 ----------------------------------*/
-export const { setLoginSheet, setMediaFrom, addMessage, addFiles, setMessages, clearChat } =
-  appSlice.actions;
+export const {
+  setLoginSheet,
+  setMediaFrom,
+  addMessage,
+  addFiles,
+  setMessages,
+  clearChat,
+} = appSlice.actions;
 
 export default appSlice.reducer;

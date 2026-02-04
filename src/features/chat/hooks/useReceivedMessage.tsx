@@ -5,9 +5,15 @@ import { addMessage } from '@/state';
 import { UseReceivedMessageProps } from '../types';
 import { ChatTextItem } from '@/types';
 
-// -------------------------------------
-//       Received Message Hook
-// --------------------------------------
+/*------------------------------------------------------------
+ |                   Received Message Hook
+ |------------------------------------------------------------
+ | Responsibilities:
+ | 1. Listen for incoming socket messages
+ | 2. Dispatch messages into Redux store
+ | 3. Join a room safely (once per room)
+ | 4. Prevent duplicate listeners (StrictMode safe)
+ |------------------------------------------------------------*/
 export const useReceivedMessage = ({
   roomId,
   enabled = true,
@@ -15,32 +21,42 @@ export const useReceivedMessage = ({
   const socket = useSocket();
   const dispatch = useAppDispatch();
 
+  /*------------------------------------------------------------
+   |          Setup Listener + Join Room (Combined)
+   |------------------------------------------------------------
+   | Order matters:
+   | 1. Attach listener first
+   | 2. Then join room
+   | This ensures we never miss messages
+   *------------------------------------------------------------*/
   useEffect(() => {
     if (!socket || !enabled) return;
-    socket.emit('join_room', { roomId });
 
-    // handle received message
     const handleReceiveMessage = (data: { message: string }) => {
-      // print for debug
-      // console.log(data);
-
       const message: ChatTextItem = {
-        id: Date.now().toString(),
+        id: crypto.randomUUID(),
         type: 'text',
         content: data.message,
         direction: 'received',
       };
+
       dispatch(addMessage(message));
     };
 
-    // received message event
+    // 1. Setup listener first
+    socket.off('receive_message', handleReceiveMessage);
     socket.on('receive_message', handleReceiveMessage);
 
-    // remove event listener
+    // 2. Join room after listener is ready
+    socket.emit('join_room', { roomId });
+
+    // Cleanup
     return () => {
       socket.off('receive_message', handleReceiveMessage);
+      // Optional: leave room on unmount
+      // socket.emit('leave_room', { roomId });
     };
-  }, [socket, roomId, enabled, dispatch]);
+  }, [socket, dispatch, roomId, enabled]);
 
   return { socket };
 };

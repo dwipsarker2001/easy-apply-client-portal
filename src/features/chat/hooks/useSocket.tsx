@@ -1,31 +1,30 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
 
 export const useSocket = () => {
-  const socketRef = useRef<Socket | null>(null);
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
-    // Connect to socket server (without auth for testing)
-    socketRef.current = io('http://localhost:8080', {
+    // Connect to socket server
+    const newSocket = io('http://localhost:8080', {
       withCredentials: true,
-      // TODO: Add auth token when ready
-      // auth: {
-      //   token: localStorage.getItem('authToken') || '',
-      // },
     });
 
-    socketRef.current.on('connect', () => {
-      console.log('Socket connected:', socketRef.current?.id);
+    newSocket.on('connect', () => {
+      console.log('Socket connected:', newSocket.id);
     });
 
-    socketRef.current.on('disconnect', () => {
+    newSocket.on('disconnect', () => {
       console.log('Socket disconnected');
     });
 
+    // This will trigger a re-render in all components using useSocket
+    setSocket(newSocket);
+
     return () => {
-      socketRef.current?.disconnect();
+      newSocket.disconnect();
     };
   }, []);
 
-  return socketRef.current;
+  return socket;
 };

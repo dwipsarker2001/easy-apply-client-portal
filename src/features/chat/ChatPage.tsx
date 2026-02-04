@@ -1,20 +1,14 @@
-import { useAppDispatch, useAppSelector } from '@/hooks';
-import { setLoginSheet } from '@/state';
-import React, { useEffect } from 'react';
+import React from 'react';
 import BottomSheet from './components/BottomSheet';
-import ChatArea from './components/ChatArea';
 import Header from './components/Header';
+import ChatArea from './components/ChatArea';
+import { useReceivedMessage } from './hooks/useReceivedMessage';
 import InputArea from './components/InputArea';
 
+const ROOM_ID = 'client_3';
 const ChatPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector(state => state.app.isLoggedIn);
-  useEffect(() => {
-    // Show login sheet if user is not logged in
-    if (!isLoggedIn) {
-      dispatch(setLoginSheet(true));
-    }
-  }, [isLoggedIn, dispatch]);
+  useReceivedMessage({ roomId: ROOM_ID });
+
   return (
     <div className="h-[100dvh] w-screen flex flex-col relative overflow-hidden">
       <Header />

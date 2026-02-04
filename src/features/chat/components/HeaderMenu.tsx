@@ -1,5 +1,5 @@
 import { useAppDispatch } from '@/hooks';
-import { clearChat, logout } from '@/state';
+import { clearChat } from '@/state';
 import {
   Delete02Icon,
   Logout03Icon,
@@ -43,7 +43,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
-      dispatch(logout());
+      // dispatch(logout());
       onClose();
     }
   };

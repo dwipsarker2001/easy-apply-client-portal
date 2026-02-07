@@ -6,7 +6,7 @@ import HeaderMenu from './HeaderMenu';
 
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const userInfo = useAppSelector(state => state.app.userInfo);
+  const userInfo = useAppSelector(state => state.auth.userInfo);
   return (
     <header className=" bg-white flex items-center  justify-between p-4 ">
       {/*-------------------------------------

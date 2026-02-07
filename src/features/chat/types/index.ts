@@ -11,7 +11,7 @@ export interface UseReceivedMessageProps {
 ----------------------------------*/
 export interface UseSendMessageProps {
   roomId: string;
-  userId: string;
+  userId: number | null;
   clientId: number;
   senderRole?: 'user' | 'admin';
 }

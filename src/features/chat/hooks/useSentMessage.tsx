@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
-import { addMessage, addFiles, setMediaFrom } from '@/state';
 import { useSocket } from './useSocket';
 import { UseSendMessageProps } from '../types';
 import { ChatTextItem } from '@/types';
+import { addFiles, addMessage, setMediaFrom } from '../redux/chatSlice';
 
 export const useSendMessage = ({
   roomId,

@@ -12,12 +12,11 @@ import MediaPreview from './MediaPreview';
 import { useSendMessage } from '../hooks/useSentMessage';
 
 const InputArea: React.FC = () => {
-  const mediaFrom = useAppSelector(state => state.app.mediaFrom);
   const dispatch = useAppDispatch();
-
+  const { mediaFrom } = useAppSelector(state => state.chat);
   const [clientId, setClientId] = useState<number | null>(null);
   const [roomId, setRoomId] = useState<string>('');
-  const [userId, setUserId] = useState<string>('1');
+  const [userId, setUserId] = useState<number | null>(1);
 
   // -------------------
   // Initialize clientId, roomId, userId
@@ -36,7 +35,7 @@ const InputArea: React.FC = () => {
         const user = JSON.parse(authUser);
         setUserId(user._id || user.id || '');
       } catch {
-        setUserId('');
+        setUserId(null);
       }
     }
   }, []);

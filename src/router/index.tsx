@@ -7,7 +7,7 @@ import ChatPage from '@/features/chat';
 
 const routes = createBrowserRouter([
   {
-    path: '/',
+    path: '/:username',
     element: <ChatPage />,
     // element:<ChatTest />
   },

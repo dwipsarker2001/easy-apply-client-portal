@@ -2,16 +2,14 @@ import FileMessage from '@/features/chat/components/FileMessage';
 import TextMessage from '@/components/TextMessage';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import React, { useEffect, useRef } from 'react';
-import SendInfo from './SendingInfo';
 import { socket } from '@/socket/socket';
-import { registerChatListeners } from '@/socket/listeners';
-import { setMediaFrom } from '@/state';
+import { setMediaFrom } from '../redux/chatSlice';
+
 
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { mediaFrom, chat } = useAppSelector(state => state.app);
-  const { clientId } = useAppSelector(state => state.client);
-
+  const { mediaFrom, chat } = useAppSelector(state => state.chat);
+  const { clientId } = useAppSelector(state => state.auth);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when chat changes
@@ -26,8 +24,6 @@ const ChatArea: React.FC = () => {
     // Connect socket
     socket.connect();
 
-    // Register chat listeners
-    registerChatListeners(dispatch);
 
     // Join room and load messages
     if (clientId) {

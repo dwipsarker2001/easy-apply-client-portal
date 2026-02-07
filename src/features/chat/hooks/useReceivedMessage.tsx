@@ -1,9 +1,9 @@
 import { useEffect } from 'react';
 import { useSocket } from './useSocket';
 import { useAppDispatch } from '@/hooks';
-import { addMessage } from '@/state';
 import { UseReceivedMessageProps } from '../types';
 import { ChatTextItem } from '@/types';
+import { addMessage } from '../redux/chatSlice';
 
 /*------------------------------------------------------------
  |                   Received Message Hook

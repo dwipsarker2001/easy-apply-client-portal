@@ -1,4 +1,6 @@
 import { baseApi } from '@/api';
+import { UserInfo, UserResponse } from '../types';
+import { login } from '../redux/authSlice';
 
 /*----------------------------------
   Types
@@ -27,12 +29,31 @@ export interface RegisterApiResponse {
   };
 }
 
+
 /*----------------------------------
   RTK Query clientApi
 ----------------------------------*/
 export const clientApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: builder => ({
+
+    /* ------------------------------
+       Get Shop owner information
+    ------------------------------ */
+    userInfo: builder.query<UserInfo, string>({
+      query: username => `/api/auth/${username}`,
+      transformResponse: (response: UserResponse) => response.data,
+      async onQueryStarted(username, { dispatch, queryFulfilled }) {
+        try {
+          const user = await queryFulfilled;
+          dispatch(login(user.data));
+        } catch (error) {
+          console.error('Failed to fetch owner info', error);
+        }
+      },
+    }),
+
+
     /* ------------------------------
        Register Client
     ------------------------------ */
@@ -42,8 +63,19 @@ export const clientApi = baseApi.injectEndpoints({
         method: 'POST',
         body: payload,
       }),
-    }),
 
+      async onQueryStarted(payload, { dispatch, queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled;
+
+          // update Redux state here
+          dispatch(setClientId(data.data.clientId));
+          dispatch(setLoginSheet(false));
+        } catch (err) {
+          console.error('Registration failed', err);
+        }
+      },
+    }),
     /* ------------------------------
        Get All Clients
     ------------------------------ */
@@ -57,4 +89,4 @@ export const clientApi = baseApi.injectEndpoints({
 /*----------------------------------
   Export hooks
 ----------------------------------*/
-export const { useRegisterMutation, useGetAllClientsQuery } = clientApi;
+export const { useUserInfoQuery, useRegisterMutation, useGetAllClientsQuery } = clientApi;

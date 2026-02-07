@@ -1,5 +1,4 @@
 import { useAppDispatch } from '@/hooks';
-import { clearChat } from '@/state';
 import {
   Delete02Icon,
   Logout03Icon,
@@ -7,6 +6,7 @@ import {
 } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
+import { clearChat } from '../redux/chatSlice';
 
 interface HeaderMenuProps {
   isOpen: boolean;

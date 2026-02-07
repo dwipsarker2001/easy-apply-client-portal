@@ -1,14 +1,14 @@
 import { useRegisterMutation } from '@/features/auth/api';
+import { setLoginSheet } from '@/features/auth/redux/authSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { setLoginSheet } from '@/state';
-import { setClientId } from '@/state/clientSlice';
 import { SmartPhone01Icon, UserIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useState } from 'react';
 
+
 const BottomSheet: React.FC = () => {
   const dispatch = useAppDispatch();
-  const loginSheet = useAppSelector(state => state.app.loginSheet);
+  const loginSheet = useAppSelector(state => state.auth.loginSheet);
 
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
@@ -60,12 +60,12 @@ const BottomSheet: React.FC = () => {
     if (validateForm()) {
       e.preventDefault();
 
+      // get full name 
       if (!fullName || !phoneNumber) return;
-
+      
       try {
-        const res = await register({ name: fullName, phoneNumber }).unwrap();
-        dispatch(setClientId(res.data.clientId));
-        dispatch(setLoginSheet(false));
+        // register now
+        register({ name: fullName, phoneNumber }).unwrap();
         setFullName('');
         setPhoneNumber('');
       } catch (err) {
@@ -97,7 +97,7 @@ const BottomSheet: React.FC = () => {
 
         {/* Header */}
         <div className="px-6 pt-2 pb-4">
-          <h2 className="text-[22px] font-bold text-gray-900">আপনার তথ্য </h2>
+          <h2 className="text-[22px] font-bold text-gray-900">আপনার তথ্য</h2>
           <p className="text-sm text-gray-600 mt-1">
             ডকুমেন্ট আদান-প্রদান নিশ্চিত করতে আপনার সঠিক নাম এবং মোবাইল নম্বর
             প্রদান করা বাধ্যতামূলক , যা আমাদের কার্যক্রম সহজ করবে।

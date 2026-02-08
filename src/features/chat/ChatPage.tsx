@@ -1,9 +1,9 @@
 import React from 'react';
-import BottomSheet from '../auth/components/BottomSheet';
+import AuthSheet from '../auth/AuthSheet';
 import Header from './components/Header';
 import ChatArea from './components/ChatArea';
-import { useReceivedMessage } from './hooks/useReceivedMessage';
 import InputArea from './components/InputArea';
+import { useReceivedMessage } from './hooks/useReceivedMessage';
 import { Navigate, useParams } from 'react-router';
 import { useUserInfoQuery } from '../auth/api';
 
@@ -23,7 +23,7 @@ const ChatPage: React.FC = () => {
       <Header />
       <ChatArea />
       <InputArea />
-      <BottomSheet />
+      <AuthSheet />
     </div>
   );
 };

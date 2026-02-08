@@ -1,6 +1,6 @@
 import { baseApi } from '@/api';
 import { UserInfo, UserResponse } from '../types';
-import { login } from '../redux/authSlice';
+import { login, setClientId, setLoginSheet } from '../redux/authSlice';
 
 /*----------------------------------
   Types
@@ -69,6 +69,7 @@ export const clientApi = baseApi.injectEndpoints({
           const { data } = await queryFulfilled;
 
           // update Redux state here
+          localStorage.setItem('clientId', String(data.data.clientId));
           dispatch(setClientId(data.data.clientId));
           dispatch(setLoginSheet(false));
         } catch (err) {

@@ -33,12 +33,13 @@ const persistedState = loadPersistedState();
 
 const initialState: AuthStateType = {
   clientId: null,
-  isLoggedIn: persistedState.isLoggedIn || false,
-  loginSheet: true,
+  isLoggedIn: persistedState.isLoggedIn ?? false,
+  loginSheet: persistedState.loginSheet ?? (persistedState.isLoggedIn ? false : true),
   userInfo: persistedState.userInfo || {
     userId: null,
     userName: null,
     userEmail: null,
+    userAvatar: undefined,
   },
 };
 
@@ -58,8 +59,7 @@ const authSlice = createSlice({
     login(state, action: PayloadAction<UserInfo>) {
       state.isLoggedIn = true;
       state.userInfo = action.payload;
-      
-      console.log(action.payload);
+      state.loginSheet = false;
 
       try {
         localStorage.setItem(
@@ -82,7 +82,12 @@ const authSlice = createSlice({
     ----------------------------------*/
     logout(state) {
       state.isLoggedIn = false;
-      state.userInfo = { userId: null, userName: null, userEmail: null };
+      state.userInfo = { 
+        userId: null, 
+        userName: null, 
+        userEmail: null, 
+        userAvatar: undefined 
+      };
       state.loginSheet = false;
 
       try {
@@ -98,12 +103,29 @@ const authSlice = createSlice({
     ----------------------------------*/
     setLoginSheet(state, action: PayloadAction<boolean>) {
       state.loginSheet = action.payload;
+
+      const saved = loadPersistedState();
+      localStorage.setItem(
+        'authState',
+        JSON.stringify({
+          ...saved,
+          loginSheet: action.payload,
+        })
+      );
     },
+
+    /*----------------------------------
+      Set client id
+      - Toggles visibility of login modal/bottom sheet
+    ----------------------------------*/
+    setClientId(state, action: PayloadAction<number>) {
+      state.clientId = action.payload;
+    }
   },
 });
 
 /*----------------------------------
   Exports
 ----------------------------------*/
-export const { login, logout, setLoginSheet } = authSlice.actions;
+export const { login, logout, setLoginSheet, setClientId } = authSlice.actions;
 export default authSlice.reducer;

@@ -1,4 +1,5 @@
 import ChatPage from '@/features/chat';
+import NotFound from '@/features/not-found/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
 
 /*--------------------------------------------------
@@ -8,7 +9,15 @@ import { createBrowserRouter } from 'react-router-dom';
 const routes = createBrowserRouter([
   {
     path: '/',
+    element: <NotFound />,
+  },
+  {
+    path: '/:username/:id',
     element: <ChatPage />,
+  },
+  {
+    path: '*',
+    element: <NotFound />,
   },
 ]);
 

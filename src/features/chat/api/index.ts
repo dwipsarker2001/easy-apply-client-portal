@@ -1,17 +1,7 @@
 import { baseApi } from "@/api";
 
-export interface BookType {
-  id: number;
-  name: string;
-  image: string;
-  createdAt: string;
-  updatedAt: string;
-  totalChapters: number;
-  totalGroups: number;
-  totalQuestions: number;
-}
 
-export const bookApi = baseApi.injectEndpoints({
+export const chatApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: (builder) => ({
     /* -------------------------------------
@@ -76,4 +66,4 @@ export const {
   useUploadDocumentMutation,
   useUploadPhotoMutation,
   useUploadSignatureMutation,
-} = bookApi;
+} = chatApi;

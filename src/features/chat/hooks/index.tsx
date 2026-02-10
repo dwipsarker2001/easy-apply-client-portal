@@ -2,8 +2,8 @@ import {
   useUploadDocumentMutation,
   useUploadPhotoMutation,
   useUploadSignatureMutation,
-} from "../api";
-import { toast } from "react-toastify";
+} from '../api';
+import { toast } from 'react-toastify';
 
 /*--------------------------------------------
           Use Document Upload
@@ -15,12 +15,12 @@ export const useDocumentUpload = () => {
   const handleUpload = async (formData: FormData) => {
     try {
       const result = await uploadDocument(formData).unwrap();
-      console.log(result,'this is result');
-      toast.success("Document uploaded successfully!");
+      console.log(result, 'this is result');
+      toast.success('Document uploaded successfully!');
       return result;
     } catch (err) {
-      toast.error("Failed to upload document.");
-      console.error("Error uploading document:", err);
+      toast.error('Failed to upload document.');
+      console.error('Error uploading document:', err);
       throw err;
     }
   };
@@ -42,11 +42,11 @@ export const usePhotoUpload = () => {
   const handleUpload = async (formData: FormData) => {
     try {
       const result = await uploadPhoto(formData).unwrap();
-      toast.success("Photo uploaded successfully!");
+      toast.success('Photo uploaded successfully!');
       return result;
     } catch (err) {
-      toast.error("Failed to upload photo.");
-      console.error("Error uploading photo:", err);
+      toast.error('Failed to upload photo.');
+      console.error('Error uploading photo:', err);
       throw err;
     }
   };
@@ -69,11 +69,11 @@ export const useSignatureUpload = () => {
   const handleUpload = async (formData: FormData) => {
     try {
       const result = await uploadSignature(formData).unwrap();
-      toast.success("Signature uploaded successfully!");
+      toast.success('Signature uploaded successfully!');
       return result;
     } catch (err) {
-      toast.error("Failed to upload signature.");
-      console.error("Error uploading signature:", err);
+      toast.error('Failed to upload signature.');
+      console.error('Error uploading signature:', err);
       throw err;
     }
   };

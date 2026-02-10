@@ -1,9 +1,9 @@
-import "react-toastify/dist/ReactToastify.css";
-import React, { useState } from "react";
-import Header from "../components/Header";
-import Sidebar from "../features/sidebar";
-import { Outlet } from "react-router";
-import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+import React, { useState } from 'react';
+import Header from '../components/Header';
+import Sidebar from '../features/sidebar';
+import { Outlet } from 'react-router';
+import { ToastContainer } from 'react-toastify';
 
 const MainContent = () => (
   <main className="flex-1 overflow-y-auto bg-gray-100 p-6">
@@ -29,7 +29,12 @@ const Dashboard = () => {
           <Outlet />
         </main>
       </div>
-      <ToastContainer position="bottom-right" hideProgressBar={true} className="text-sm" draggable />
+      <ToastContainer
+        position="bottom-right"
+        hideProgressBar={true}
+        className="text-sm"
+        draggable
+      />
     </div>
   );
 };

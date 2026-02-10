@@ -1,6 +1,7 @@
 import ChatPage from '@/features/chat';
 import NotFound from '@/features/not-found/NotFound';
 import { createBrowserRouter } from 'react-router-dom';
+import ChatPage from '@/features/chat';
 
 /*--------------------------------------------------
 | App Routes

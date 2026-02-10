@@ -3,16 +3,16 @@ import {
   Books02FreeIcons,
   ClothesFreeIcons,
   TeacherFreeIcons,
-} from "@hugeicons/core-free-icons";
-import { ItemProps } from "../types/book.types";
+} from '@hugeicons/core-free-icons';
+import { ItemProps } from '../types/book.types';
 
 // export menu
 const dashboards: ItemProps[] = [
   {
     id: 1,
-    label: "Easy Apply",
+    label: 'Easy Apply',
     icon: Books02FreeIcons,
-    link: "/easy-apply",
+    link: '/easy-apply',
     isActive: true,
   },
 ];

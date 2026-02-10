@@ -1,71 +1,46 @@
 import { useRegisterMutation } from '@/features/auth/api';
+import { setLoginSheet } from '@/features/auth/redux/authSlice';
 import { useAppDispatch, useAppSelector } from '@/hooks';
-import { setLoginSheet } from '@/state';
-import { setClientId } from '@/state/clientSlice';
 import { SmartPhone01Icon, UserIcon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useState } from 'react';
+import { validateRegisterForm } from './validations/register.validation';
+import { RegisterFormErrors } from './types';
 
-const BottomSheet: React.FC = () => {
+
+const AuthSheet: React.FC = () => {
   const dispatch = useAppDispatch();
-  const loginSheet = useAppSelector(state => state.app.loginSheet);
+  const loginSheet = useAppSelector(state => state.auth.loginSheet);
 
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
-  const [errors, setErrors] = useState({ fullName: '', phoneNumber: '' });
+  const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [register, { isLoading, error, isSuccess }] = useRegisterMutation();
 
-  // -------------------
-  // Auto Reopen if registration failed
-  // -------------------
+  // get local 
   useEffect(() => {
     const clientId = localStorage.getItem('clientId');
     if (!clientId && !loginSheet) {
-      // Reopen sheet if clientId not stored
       dispatch(setLoginSheet(true));
     }
   }, [loginSheet, dispatch]);
 
-  const validateForm = (): boolean => {
-    const newErrors = { fullName: '', phoneNumber: '' };
-    let isValid = true;
-
-    // Validate full name
-    if (!fullName.trim()) {
-      newErrors.fullName = 'Full name is required';
-      isValid = false;
-    } else if (fullName.trim().length < 3) {
-      newErrors.fullName = 'Name must be at least 3 characters';
-      isValid = false;
-    }
-
-    // Validate phone number
-    const phoneRegex = /^[0-9]{10,15}$/;
-    if (!phoneNumber.trim()) {
-      newErrors.phoneNumber = 'Phone number is required';
-      isValid = false;
-    } else if (!phoneRegex.test(phoneNumber.replace(/\s/g, ''))) {
-      newErrors.phoneNumber = 'Please enter a valid phone number';
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
-  };
 
   /* -------------------
        Handle submit
    ------------------- */
   const handleSubmit = async (e: React.FormEvent) => {
-    if (validateForm()) {
-      e.preventDefault();
+    e.preventDefault();
+    const values = { fullName, phoneNumber };
+    const validationErrors = validateRegisterForm(values);
 
-      if (!fullName || !phoneNumber) return;
+    // Set errors in state so UI shows them
+    setErrors(validationErrors);
 
+    // Only submit if there are no errors
+    if (Object.keys(validationErrors).length === 0) {
       try {
-        const res = await register({ name: fullName, phoneNumber }).unwrap();
-        dispatch(setClientId(res.data.clientId));
-        dispatch(setLoginSheet(false));
+        await register({ name: fullName, phoneNumber }).unwrap();
         setFullName('');
         setPhoneNumber('');
       } catch (err) {
@@ -97,7 +72,7 @@ const BottomSheet: React.FC = () => {
 
         {/* Header */}
         <div className="px-6 pt-2 pb-4">
-          <h2 className="text-[22px] font-bold text-gray-900">আপনার তথ্য </h2>
+          <h2 className="text-[22px] font-bold text-gray-900">আপনার তথ্য</h2>
           <p className="text-sm text-gray-600 mt-1">
             ডকুমেন্ট আদান-প্রদান নিশ্চিত করতে আপনার সঠিক নাম এবং মোবাইল নম্বর
             প্রদান করা বাধ্যতামূলক , যা আমাদের কার্যক্রম সহজ করবে।
@@ -198,4 +173,4 @@ const BottomSheet: React.FC = () => {
   );
 };
 
-export default BottomSheet;
+export default AuthSheet;

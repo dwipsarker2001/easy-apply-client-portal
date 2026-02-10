@@ -1,26 +1,29 @@
-import { useAppDispatch, useAppSelector } from '@/hooks';
-import { setLoginSheet } from '@/state';
-import React, { useEffect } from 'react';
-import BottomSheet from './components/BottomSheet';
-import ChatArea from './components/ChatArea';
+import React from 'react';
+import AuthSheet from '../auth/AuthSheet';
 import Header from './components/Header';
+import ChatArea from './components/ChatArea';
 import InputArea from './components/InputArea';
+import { useReceivedMessage } from './hooks/useReceivedMessage';
+import { Navigate, useParams } from 'react-router';
+import { useUserInfoQuery } from '../auth/api';
 
+const ROOM_ID = 'client_3';
 const ChatPage: React.FC = () => {
-  const dispatch = useAppDispatch();
-  const isLoggedIn = useAppSelector(state => state.app.isLoggedIn);
-  useEffect(() => {
-    // Show login sheet if user is not logged in
-    if (!isLoggedIn) {
-      dispatch(setLoginSheet(true));
-    }
-  }, [isLoggedIn, dispatch]);
+  useReceivedMessage({ roomId: ROOM_ID });
+  
+  // get username
+  const { username } = useParams<{ username: string }>();
+  if (!username) return <Navigate to="/404" replace />;
+  
+  // Fetch owner info
+  useUserInfoQuery(username);
+
   return (
     <div className="h-[100dvh] w-screen flex flex-col relative overflow-hidden">
       <Header />
       <ChatArea />
       <InputArea />
-      <BottomSheet />
+      <AuthSheet />
     </div>
   );
 };

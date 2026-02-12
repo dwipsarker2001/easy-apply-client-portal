@@ -15,3 +15,18 @@ export interface UseSendMessageProps {
   clientId: number;
   senderRole?: 'user' | 'admin';
 }
+
+/*----------------------------------
+  Messages
+----------------------------------*/
+export interface Message {
+  id: number;
+  roomId: string;
+  clientId: number;
+  userId: number;
+  senderRole: "admin" | "user"; 
+  message: string;
+  isRead: boolean;
+  createdAt: string;
+  updatedAt: string;
+}

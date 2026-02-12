@@ -27,8 +27,12 @@ const chatSlice = createSlice({
     /*----------------------------------
       Add Chat Item
     ----------------------------------*/
-    addChatItem(state, action: PayloadAction<ChatItem | ChatTextItem>) {
-      state.chat.push(action.payload);
+    addChatItem(state, action: PayloadAction<ChatItem | ChatItem[]>) {
+      if (Array.isArray(action.payload)) {
+        state.chat.push(...action.payload);
+      } else {
+        state.chat.push(action.payload);
+      }
     },
 
     /*----------------------------------

@@ -1,4 +1,7 @@
 import { baseApi } from "@/api";
+import { Message } from "../types";
+import { addChatItem } from "../redux/chatSlice";
+import { ChatItem } from "@/types";
 
 
 export const chatApi = baseApi.injectEndpoints({
@@ -7,20 +10,35 @@ export const chatApi = baseApi.injectEndpoints({
     /* -------------------------------------
             Greetings QUERY
     -------------------------------------- */
-    greetings: builder.query<{ message: string }, void>({
-      query: () => `/client/greetings`,
+    loadMessages: builder.query<
+      Message[], // return type: Message array
+      { clientId: number; userId: number }
+    >({
+      query: ({ clientId, userId }) =>
+        `/client/messages?clientId=${clientId}&userId=${userId}`,
+
+      transformResponse: (response: { success: boolean; data: Message[] }) =>
+        response.data, // <-- now queryFulfilled.data is Message[]
+
+      async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+        try {
+          const messages = (await queryFulfilled).data;
+
+          const chatItems: ChatItem[] = messages.map(msg => ({
+            id: msg.id.toString(),
+            type: "text",
+            content: msg.message,
+            direction: msg.senderRole === "user" ? "sent" : "received",
+          }));
+
+          dispatch(addChatItem(chatItems));
+        } catch (error) {
+          console.error("Failed to load messages", error);
+        }
+      },
     }),
 
-    /* -------------------------------------
-            Message QUERY
-    -------------------------------------- */
-    message: builder.mutation<{ reply: string }, { message: string }>({
-      query: (payload) => ({
-        url: "/client/message",
-        method: "POST",
-        body: payload,
-      }),
-    }),
+    
 
     /* -------------------------------------
             Upload Document QUERY
@@ -62,7 +80,7 @@ export const chatApi = baseApi.injectEndpoints({
 
 // Export Books Hooks
 export const {
-  useGreetingsQuery,
+  useLoadMessagesQuery,
   useUploadDocumentMutation,
   useUploadPhotoMutation,
   useUploadSignatureMutation,

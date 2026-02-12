@@ -10,6 +10,7 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { useAppDispatch, useAppSelector } from '@/hooks';
 import MediaPreview from './MediaPreview';
 import { useSendMessage } from '../hooks/useSentMessage';
+import { setMediaFrom } from '../redux/chatSlice';
 
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -128,7 +129,7 @@ const InputArea: React.FC = () => {
           {!hasContent && (
             <button
               onClick={() =>
-                dispatch({ type: 'app/setMediaFrom', payload: 'camera' })
+                dispatch(setMediaFrom('camera'))
               }
             >
               <HugeiconsIcon icon={Camera01FreeIcons} />
@@ -146,7 +147,7 @@ const InputArea: React.FC = () => {
         ) : (
           <button
             onClick={() =>
-              dispatch({ type: 'app/setMediaFrom', payload: 'storage' })
+              dispatch(setMediaFrom('storage'))
             }
             className="py-2 bg-white text-black h-14 w-14 rounded-full grid place-content-center"
           >

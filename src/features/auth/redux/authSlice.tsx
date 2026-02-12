@@ -40,6 +40,7 @@ const initialState: AuthStateType = {
     userName: null,
     userEmail: null,
     userAvatar: undefined,
+    userStatus: false
   },
 };
 
@@ -86,7 +87,8 @@ const authSlice = createSlice({
         userId: null, 
         userName: null, 
         userEmail: null, 
-        userAvatar: undefined 
+        userAvatar: undefined, 
+        userStatus: false
       };
       state.loginSheet = false;
 

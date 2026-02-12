@@ -3,6 +3,7 @@ export interface UserInfo {
   userName: string | null;
   userEmail: string | null;
   userAvatar: string | undefined;
+  userStatus: boolean;
 }
 
 export interface UserResponse {

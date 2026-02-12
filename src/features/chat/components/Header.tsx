@@ -7,8 +7,9 @@ import HeaderMenu from './HeaderMenu';
 const Header: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const userInfo = useAppSelector(state => state.auth.userInfo);
+
   return (
-    <header className=" bg-white flex items-center  justify-between p-4 ">
+    <header className="bg-white flex items-center justify-between p-4">
       {/*-------------------------------------
              Chat Avatar & Status  
         -------------------------------------*/}
@@ -18,11 +19,16 @@ const Header: React.FC = () => {
             className="h-full w-full rounded-full"
             src={userInfo.userAvatar}
           />
-          <div className="absolute bottom-0 right-0 bg-green-600 rounded-full w-3 h-3 border-2 border-white"></div>
+          <div
+            className={`absolute bottom-0 right-0 rounded-full w-3 h-3 border-2 border-white
+              ${userInfo.userStatus ? 'bg-green-500' : 'bg-gray-400'}`}
+          ></div>
         </div>
         <div>
           <h1 className="font-bold">{userInfo.userName}</h1>
-          <p className="text-sm text-gray-500">Online</p>
+          <p className="text-sm text-gray-500">
+            {userInfo.userStatus ? 'Online' : 'Offline'}
+          </p>
         </div>
       </div>
 

@@ -13,7 +13,7 @@ const routes = createBrowserRouter([
     element: <NotFound />,
   },
   {
-    path: '/:username/:id',
+    path: '/:username',
     element: <ChatPage />,
   },
   {

@@ -32,6 +32,7 @@ export type ChatTextItem = {
   type: "text";
   content: string;
   direction: MessageDirection;
+  time: string,
 };
 
 export type ChatFileItem = {

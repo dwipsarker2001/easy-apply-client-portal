@@ -5,9 +5,10 @@ import React from 'react';
 interface PropsType {
   message: string;
   direction?: 'sent' | 'received';
+  time: string;
 }
 
-const TextMessage: React.FC<PropsType> = ({ message, direction = 'sent' }) => {
+const TextMessage: React.FC<PropsType> = ({ message, time, direction = 'sent', }) => {
   return (
     <div className={direction === 'sent' ? 'flex flex-row-reverse' : 'flex'}>
       <div className="relative">
@@ -21,7 +22,7 @@ const TextMessage: React.FC<PropsType> = ({ message, direction = 'sent' }) => {
           {message}
           {/* Message info */}
           <div className="text-xs font-thin flex items-end gap-1">
-            <span>7:50 am</span>
+            <span>{time}</span>
             {direction === 'sent' && (
               <span>
                 <HugeiconsIcon size={16} icon={TickDouble01Icon} />

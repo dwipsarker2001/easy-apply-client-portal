@@ -29,6 +29,7 @@ export const chatApi = baseApi.injectEndpoints({
             type: "text",
             content: msg.message,
             direction: msg.senderRole === "user" ? "sent" : "received",
+            time: new Date(msg.updatedAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
           }));
 
           dispatch(addChatItem(chatItems));

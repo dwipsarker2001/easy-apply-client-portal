@@ -70,6 +70,7 @@ const ChatArea: React.FC = () => {
                 key={item.id}
                 message={item.content}
                 direction={item.direction}
+                time={item.time}
               />
             );
           }

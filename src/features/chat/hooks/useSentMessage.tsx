@@ -41,6 +41,7 @@ export const useSendMessage = ({
         type: 'text',
         content: textValue.trim(),
         direction: 'sent',
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }), // e.g., "08:42"
       };
       dispatch(addMessage(message));
 

@@ -8,7 +8,7 @@ export const chatApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: (builder) => ({
     /* -------------------------------------
-            Greetings QUERY
+            Load Message Query
     -------------------------------------- */
     loadMessages: builder.query<
       Message[], // return type: Message array

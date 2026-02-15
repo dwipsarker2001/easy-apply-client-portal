@@ -25,7 +25,7 @@ const ChatPage: React.FC = () => {
       <Header />
       <ChatArea />
       <InputArea />
-      <AuthSheet />
+      <AuthSheet /> 
     </div>
   );
 };

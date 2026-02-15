@@ -22,34 +22,6 @@ export interface AppEvents {
   isMenuOpen: boolean;
 }
 
-/*----------------------------------
-  Chat Types
-----------------------------------*/
-export type MessageDirection = "sent" | "received";
-
-export type ChatTextItem = {
-  id: string;
-  type: "text";
-  content: string;
-  direction: MessageDirection;
-  time: string,
-};
-
-export type ChatFileItem = {
-  id: string;
-  type: "file";
-  file: File;
-  direction: MessageDirection;
-};
-
-export type ChatItem = ChatTextItem | ChatFileItem;
-
-/*----------------------------------
-  Chat State
-----------------------------------*/
-export interface ChatState {
-  chat: ChatItem[];
-}
 
 /*----------------------------------
   Action Panel Props

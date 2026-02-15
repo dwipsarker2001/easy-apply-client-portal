@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useSocket } from './useSocket';
 import { useAppDispatch } from '@/hooks';
 import { UseReceivedMessageProps } from '../types';
-import { ChatTextItem } from '@/types';
+import { ChatTextItem } from '../types';
 import { addMessage } from '../redux/chatSlice';
 
 /*------------------------------------------------------------
@@ -38,6 +38,7 @@ export const useReceivedMessage = ({
         type: 'text',
         content: data.message,
         direction: 'received',
+        time: "Demo Time"
       };
 
       dispatch(addMessage(message));
@@ -46,8 +47,6 @@ export const useReceivedMessage = ({
     // 1. Setup listener first
     socket.off('receive_message', handleReceiveMessage);
     socket.on('receive_message', handleReceiveMessage);
-
-    // 2. Join room after listener is ready
     socket.emit('join_room', { roomId });
 
     // Cleanup

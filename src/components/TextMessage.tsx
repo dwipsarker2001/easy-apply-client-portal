@@ -1,14 +1,10 @@
+import { ChatItem } from '@/features/chat/types';
 import { TickDouble01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React from 'react';
 
-interface PropsType {
-  message: string;
-  direction?: 'sent' | 'received';
-  time: string;
-}
 
-const TextMessage: React.FC<PropsType> = ({ message, time, direction = 'sent', }) => {
+const TextMessage: React.FC<ChatItem> = ({ message, time, direction = 'sent', }) => {
   return (
     <div className={direction === 'sent' ? 'flex flex-row-reverse' : 'flex'}>
       <div className="relative">

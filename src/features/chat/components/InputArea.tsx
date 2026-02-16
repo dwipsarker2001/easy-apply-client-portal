@@ -51,8 +51,7 @@ const InputArea: React.FC = () => {
   } = useSendMessage({
     roomId,
     clientId: clientId!,
-    userId,
-    senderRole: 'user',
+    userId
   });
 
   const isTyping = textValue.trim().length > 0;

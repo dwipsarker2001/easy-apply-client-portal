@@ -13,7 +13,7 @@ export interface UseSendMessageProps {
   roomId: string;
   userId: number | null;
   clientId: number;
-  senderRole?: 'user' | 'admin';
+  senderRole?: 'user' | 'client';
 }
 
 /*----------------------------------
@@ -24,7 +24,7 @@ export interface Message {
   roomId: string;
   clientId: number;
   userId: number;
-  senderRole: "admin" | "user"; 
+  senderRole: "client" | "user";
   message: string;
   isRead: boolean;
   createdAt: string;
@@ -37,25 +37,28 @@ export interface Message {
 ----------------------------------*/
 export type MessageDirection = "sent" | "received";
 
-export type ChatTextItem = {
+export type ChatItem = {
   id: string;
-  type: "text";
-  content: string;
-  direction: MessageDirection;
-  time: string,
-};
-
-export type ChatFileItem = {
-  id: string;
-  type: "file";         
-  fileType: string;
-  name: string;
-  preview: string;
-  direction: MessageDirection;
+  type: string;
+  message: string;
   time: string;
+  direction: MessageDirection;
+  fileType?: string;
+  preview?: string;
 };
 
-export type ChatItem = ChatTextItem | ChatFileItem;
+export type ChatResponse = {
+  id: string;
+  clientId: number;
+  userId: number;
+  senderRole: string;
+  message: string;
+  messageType: string;
+  mimeType: string | null;
+  isRead: boolean;
+  createdAt: string;   
+  updatedAt: string;
+};
 
 /*----------------------------------
   Chat State

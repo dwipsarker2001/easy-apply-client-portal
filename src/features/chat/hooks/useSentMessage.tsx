@@ -1,15 +1,15 @@
 import { useState } from 'react';
 import { useAppDispatch } from '@/hooks';
 import { useSocket } from './useSocket';
-import { ChatFileItem, UseSendMessageProps } from '../types';
-import { ChatTextItem } from '../types';
+import { ChatItem, UseSendMessageProps } from '../types';
 import { addFiles, addMessage, setMediaFrom } from '../redux/chatSlice';
+import { useDocumentUpload } from '.';
 
 export const useSendMessage = ({
   roomId,
   userId,
   clientId,
-  senderRole = 'user',
+  senderRole = 'client',
 }: UseSendMessageProps) => {
   const socket = useSocket();
   const dispatch = useAppDispatch();
@@ -17,32 +17,49 @@ export const useSendMessage = ({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Use your custom upload hook
+  const { uploadDocument } = useDocumentUpload();
+
+  // ----------------------------
+  // Function to send message
+  // ----------------------------
   const sendMessage = async () => {
     if (!textValue.trim() && !selectedFile) return;
 
     // ----------------------------
-    // Upload file first if exists
+    // Handle file upload if exists
     // ----------------------------
     if (selectedFile) {
-      try {
+      // Save file to upload later
+      const fileToUpload = selectedFile;
 
-        // File information goes here
-        const fileInfo:ChatFileItem = {
+      // Clear selected file immediately for UI update
+      setSelectedFile(null);
+
+      setIsUploading(true);
+      try {
+        // Show preview in Redux before upload completes
+        const fileInfo: ChatItem = {
           id: Date.now().toString(),
-          type: "file",
-          name: selectedFile.name,
-          preview: URL.createObjectURL(selectedFile),
-          direction: "sent",
-          fileType: selectedFile.type,
+          type: 'file',
+          message: fileToUpload.name,
+          preview: URL.createObjectURL(fileToUpload),
+          direction: 'sent',
+          fileType: fileToUpload.type,
           time: new Date().toLocaleTimeString([], {
             hour: '2-digit',
             minute: '2-digit',
           }),
-        } 
-
-        // Add file to Redux
+        };
         dispatch(addFiles(fileInfo));
-        setSelectedFile(null);
+
+        // Prepare form data for upload
+        const formData = new FormData();
+        formData.append('document', fileToUpload);
+        formData.append('clientId', clientId.toString());
+
+        // Upload document
+        await uploadDocument(formData);
       } catch (err) {
         console.error('File upload failed:', err);
       } finally {
@@ -51,14 +68,14 @@ export const useSendMessage = ({
     }
 
     // ----------------------------
-    // Send text message if exists
+    // Handle text message if exists
     // ----------------------------
     if (textValue.trim()) {
-      const message: ChatTextItem = {
+      const message: ChatItem = {
         id: Date.now().toString(),
         type: 'text',
-        content: textValue.trim(),
-        direction: 'sent',
+        message: textValue.trim(),
+        direction: "sent",
         time: new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',
@@ -78,9 +95,13 @@ export const useSendMessage = ({
       setTextValue('');
     }
 
+    // Reset media selection in Redux (optional)
     dispatch(setMediaFrom(null));
   };
 
+  // ----------------------------
+  // Handle file selection
+  // ----------------------------
   const handleFileChange = (file: File | null) => {
     setSelectedFile(file);
     dispatch(setMediaFrom(null));

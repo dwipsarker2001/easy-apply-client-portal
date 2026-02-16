@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { ChatFileItem, ChatItem, ChatTextItem } from '../types';
+import { ChatItem } from '../types';
 
 /*----------------------------------
   State Type
@@ -38,14 +38,14 @@ const chatSlice = createSlice({
     /*----------------------------------
       Add Text Message
     ----------------------------------*/
-    addMessage(state, action: PayloadAction<ChatTextItem>) {
+    addMessage(state, action: PayloadAction<ChatItem>) {
       state.chat.push(action.payload);
     },
 
     /*----------------------------------
       Add Files
     ----------------------------------*/
-    addFiles(state, action: PayloadAction<ChatFileItem>) {
+    addFiles(state, action: PayloadAction<ChatItem>) {
       state.chat.push(action.payload);
     },
 
@@ -86,4 +86,3 @@ export const {
 } = chatSlice.actions;
 
 export default chatSlice.reducer;
-  

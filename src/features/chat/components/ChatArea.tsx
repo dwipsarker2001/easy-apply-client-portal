@@ -10,8 +10,6 @@ const ChatArea: React.FC = () => {
   const { mediaFrom, chat } = useAppSelector(state => state.chat);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
-  console.log(chat);
-
   // Auto-scroll to bottom when chat changes
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -39,28 +37,30 @@ const ChatArea: React.FC = () => {
             return (
               <TextMessage
                 key={item.id}
-                message={item.content}
+                message={item.message}
                 direction={item.direction}
                 time={item.time}
+                id={item.id}
+                type={item.type}
               />
             );
           }
 
           if (item.type === 'file') {
+            console.log(item);
             return (
               <FileMessage
                 key={item.id}
-                preview={item.preview}
-                direction={item.direction}
-                name={item.name}
-                time={item.time}
-                type={item.type}
-                fileType={item.fileType}
                 id={item.id}
+                message={item.message}
+                fileType={item.fileType}
+                time={item.time}
+                direction={item.direction}
+                preview={item.preview}
+                type='file'
               />
             );
           }
-
           return null;
         })}
 

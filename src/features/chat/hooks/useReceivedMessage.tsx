@@ -1,8 +1,7 @@
 import { useEffect } from 'react';
 import { useSocket } from './useSocket';
 import { useAppDispatch } from '@/hooks';
-import { UseReceivedMessageProps } from '../types';
-import { ChatTextItem } from '../types';
+import { ChatItem, UseReceivedMessageProps } from '../types';
 import { addMessage } from '../redux/chatSlice';
 
 /*------------------------------------------------------------
@@ -32,13 +31,13 @@ export const useReceivedMessage = ({
   useEffect(() => {
     if (!socket || !enabled) return;
 
-    const handleReceiveMessage = (data: { message: string }) => {
-      const message: ChatTextItem = {
-        id: crypto.randomUUID(),
-        type: 'text',
-        content: data.message,
-        direction: 'received',
-        time: "Demo Time"
+    const handleReceiveMessage = (data: ChatItem) => {
+      const message: ChatItem = {
+        id: data.id,
+        type: data.type,
+        message: data.message,
+        direction: data.direction,
+        time: data.time
       };
 
       dispatch(addMessage(message));

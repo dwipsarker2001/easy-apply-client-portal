@@ -8,8 +8,8 @@ import { createBrowserRouter } from 'react-router-dom';
 --------------------------------------------------*/
 const routes = createBrowserRouter([
   {
-    path: '/test',
-    element: <Test />,
+    path: '/404',
+    element: <NotFound />,
   },
   {
     path: '/:username',

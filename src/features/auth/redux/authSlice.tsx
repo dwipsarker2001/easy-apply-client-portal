@@ -6,6 +6,7 @@ import { UserInfo } from '../types';
 ----------------------------------*/
 interface AuthStateType {
   clientId: number | null,
+  clientToken: string | null;
   userInfo: UserInfo;
   isLoggedIn: boolean;
   loginSheet: boolean;
@@ -32,7 +33,8 @@ const loadPersistedState = (): Partial<AuthStateType> => {
 const persistedState = loadPersistedState();
 
 const initialState: AuthStateType = {
-  clientId: null,
+  clientId: Number(localStorage.getItem("clientId")) || null,
+  clientToken: localStorage.getItem("clientToken"),
   isLoggedIn: persistedState.isLoggedIn ?? false,
   loginSheet: persistedState.loginSheet ?? (persistedState.isLoggedIn ? false : true),
   userInfo: persistedState.userInfo || {
@@ -118,10 +120,17 @@ const authSlice = createSlice({
 
     /*----------------------------------
       Set client id
-      - Toggles visibility of login modal/bottom sheet
     ----------------------------------*/
     setClientId(state, action: PayloadAction<number>) {
       state.clientId = action.payload;
+    },
+
+
+    /*----------------------------------
+      Set client token
+    ----------------------------------*/
+    setClientToken(state, action: PayloadAction<string>) {
+      state.clientToken = action.payload;
     }
   },
 });
@@ -129,5 +138,5 @@ const authSlice = createSlice({
 /*----------------------------------
   Exports
 ----------------------------------*/
-export const { login, logout, setLoginSheet, setClientId } = authSlice.actions;
+export const { login, logout, setLoginSheet, setClientId, setClientToken } = authSlice.actions;
 export default authSlice.reducer;

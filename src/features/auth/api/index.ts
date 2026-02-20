@@ -1,6 +1,6 @@
 import { baseApi } from '@/api';
 import { UserInfo, UserResponse } from '../types';
-import { login, setClientId, setLoginSheet } from '../redux/authSlice';
+import { login, setClientId, setClientToken, setLoginSheet } from '../redux/authSlice';
 
 /*----------------------------------
   Types
@@ -26,6 +26,7 @@ export interface RegisterApiResponse {
   message: string;
   data: {
     clientId: number;
+    token: string;
   };
 }
 
@@ -59,7 +60,7 @@ export const clientApi = baseApi.injectEndpoints({
     ------------------------------ */
     register: builder.mutation<RegisterApiResponse, RegisterPayload>({
       query: payload => ({
-        url: '/client/register',
+        url: '/client/auth',
         method: 'POST',
         body: payload,
       }),
@@ -67,10 +68,15 @@ export const clientApi = baseApi.injectEndpoints({
       async onQueryStarted(payload, { dispatch, queryFulfilled }) {
         try {
           const { data } = await queryFulfilled;
+          const { clientId, token } = data.data;
+          
+          // save in local storage
+          localStorage.setItem('clientId', String(clientId));
+          localStorage.setItem('clientToken', token);
 
           // update Redux state here
-          localStorage.setItem('clientId', String(data.data.clientId));
-          dispatch(setClientId(data.data.clientId));
+          dispatch(setClientId(clientId));
+          dispatch(setClientToken(token));
           dispatch(setLoginSheet(false));
         } catch (err) {
           console.error('Registration failed', err);

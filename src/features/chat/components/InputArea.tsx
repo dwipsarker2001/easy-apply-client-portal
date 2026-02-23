@@ -15,32 +15,7 @@ import { setMediaFrom } from '../redux/chatSlice';
 const InputArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const { mediaFrom } = useAppSelector(state => state.chat);
-  const [clientId, setClientId] = useState<number | null>(null);
-  const [roomId, setRoomId] = useState<string>('');
-  const [userId, setUserId] = useState<number | null>(1);
-
-  // -------------------
-  // Initialize clientId, roomId, userId
-  // -------------------
-  useEffect(() => {
-    const storedClientId = localStorage.getItem('clientId');
-    if (storedClientId) {
-      const id = Number(storedClientId);
-      setClientId(id);
-      setRoomId(`client_3`);
-    }
-
-    const authUser = localStorage.getItem('authUser');
-    if (authUser) {
-      try {
-        const user = JSON.parse(authUser);
-        setUserId(user._id || user.id || '');
-      } catch {
-        setUserId(null);
-      }
-    }
-  }, []);
-
+  const auth = useAppSelector(state => state.auth);
   const {
     textValue,
     setTextValue,
@@ -49,9 +24,9 @@ const InputArea: React.FC = () => {
     sendMessage,
     handleFileChange,
   } = useSendMessage({
-    roomId,
-    clientId: clientId!,
-    userId
+    roomId: `room-user-${auth.userInfo.userId}`,
+    clientId: auth.clientId!,
+    userId: auth.userInfo.userId!,
   });
 
   const isTyping = textValue.trim().length > 0;
@@ -126,11 +101,7 @@ const InputArea: React.FC = () => {
           />
 
           {!hasContent && (
-            <button
-              onClick={() =>
-                dispatch(setMediaFrom('camera'))
-              }
-            >
+            <button onClick={() => dispatch(setMediaFrom('camera'))}>
               <HugeiconsIcon icon={Camera01FreeIcons} />
             </button>
           )}
@@ -145,9 +116,7 @@ const InputArea: React.FC = () => {
           </button>
         ) : (
           <button
-            onClick={() =>
-              dispatch(setMediaFrom('storage'))
-            }
+            onClick={() => dispatch(setMediaFrom('storage'))}
             className="py-2 bg-white text-black h-14 w-14 rounded-full grid place-content-center"
           >
             <HugeiconsIcon icon={GoogleDocFreeIcons} />

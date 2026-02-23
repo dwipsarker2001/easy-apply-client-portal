@@ -1,6 +1,11 @@
 import { baseApi } from '@/api';
 import { UserInfo, UserResponse } from '../types';
-import { login, setClientId, setClientToken, setLoginSheet } from '../redux/authSlice';
+import {
+  login,
+  setClientId,
+  setClientToken,
+  setLoginSheet,
+} from '../redux/authSlice';
 
 /*----------------------------------
   Types
@@ -30,19 +35,17 @@ export interface RegisterApiResponse {
   };
 }
 
-
 /*----------------------------------
   RTK Query clientApi
 ----------------------------------*/
 export const clientApi = baseApi.injectEndpoints({
   overrideExisting: false,
   endpoints: builder => ({
-
     /* ------------------------------
        Get Shop owner information
     ------------------------------ */
     userInfo: builder.query<UserInfo, string>({
-      query: username => `/api/auth/${username}`,
+      query: username => `/user/${username}`,
       transformResponse: (response: UserResponse) => response.data,
       async onQueryStarted(username, { dispatch, queryFulfilled }) {
         try {
@@ -53,7 +56,6 @@ export const clientApi = baseApi.injectEndpoints({
         }
       },
     }),
-
 
     /* ------------------------------
        Register Client
@@ -69,7 +71,7 @@ export const clientApi = baseApi.injectEndpoints({
         try {
           const { data } = await queryFulfilled;
           const { clientId, token } = data.data;
-          
+
           // save in local storage
           localStorage.setItem('clientId', String(clientId));
           localStorage.setItem('clientToken', token);
@@ -96,4 +98,5 @@ export const clientApi = baseApi.injectEndpoints({
 /*----------------------------------
   Export hooks
 ----------------------------------*/
-export const { useUserInfoQuery, useRegisterMutation, useGetAllClientsQuery } = clientApi;
+export const { useUserInfoQuery, useRegisterMutation, useGetAllClientsQuery } =
+  clientApi;

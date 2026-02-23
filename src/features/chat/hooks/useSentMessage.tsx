@@ -57,6 +57,7 @@ export const useSendMessage = ({
         const formData = new FormData();
         formData.append('document', fileToUpload);
         formData.append('clientId', clientId.toString());
+        formData.append('userId', userId.toString());
 
         // Upload document
         await uploadDocument(formData);
@@ -75,7 +76,7 @@ export const useSendMessage = ({
         id: Date.now().toString(),
         type: 'text',
         message: textValue.trim(),
-        direction: "sent",
+        direction: 'sent',
         time: new Date().toLocaleTimeString([], {
           hour: '2-digit',
           minute: '2-digit',

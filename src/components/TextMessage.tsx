@@ -3,8 +3,11 @@ import { TickDouble01Icon } from '@hugeicons/core-free-icons';
 import { HugeiconsIcon } from '@hugeicons/react';
 import React from 'react';
 
-
-const TextMessage: React.FC<ChatItem> = ({ message, time, direction = 'sent', }) => {
+const TextMessage: React.FC<ChatItem> = ({
+  message,
+  time,
+  direction = 'sent',
+}) => {
   return (
     <div className={direction === 'sent' ? 'flex flex-row-reverse' : 'flex'}>
       <div className="relative">
@@ -16,7 +19,6 @@ const TextMessage: React.FC<ChatItem> = ({ message, time, direction = 'sent', })
           }
         >
           {message}
-          {/* Message info */}
           <div className="text-xs font-thin flex items-end gap-1">
             <span>{time}</span>
             {direction === 'sent' && (

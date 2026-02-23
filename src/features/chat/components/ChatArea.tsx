@@ -4,7 +4,6 @@ import { useAppDispatch, useAppSelector } from '@/hooks';
 import React, { useEffect, useRef } from 'react';
 import { setMediaFrom } from '../redux/chatSlice';
 
-
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const { mediaFrom, chat } = useAppSelector(state => state.chat);
@@ -57,7 +56,7 @@ const ChatArea: React.FC = () => {
                 time={item.time}
                 direction={item.direction}
                 preview={item.preview}
-                type='file'
+                type="file"
               />
             );
           }

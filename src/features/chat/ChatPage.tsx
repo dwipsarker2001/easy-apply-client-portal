@@ -9,27 +9,19 @@ import { useUserInfoQuery } from '../auth/api';
 import { useLoadMessagesQuery } from './api';
 import { useAppSelector } from '@/hooks';
 
-const ROOM_ID = 'client_3';
-
 const ChatPage: React.FC = () => {
   const { userInfo, clientId } = useAppSelector(state => state.auth);
   const { username } = useParams<{ username: string }>();
 
   // -------------------------------------
-  // Fetch user info
+  // Fetch user info from username param
   // -------------------------------------
   const {
     data: user,
     isError: isUserError,
     isLoading: isUserLoading,
-  } = useUserInfoQuery(username ?? '', {
-    skip: !username,
-  });
-
-  // -------------------------------------
-  // Listen for incoming messages
-  // -------------------------------------
-  useReceivedMessage({ roomId: ROOM_ID });
+  } = useUserInfoQuery(username ?? '', { skip: !username });
+  useReceivedMessage({ roomId: `room-${clientId}` });
 
   // -------------------------------------
   // Load chat messages safely
@@ -40,14 +32,14 @@ const ChatPage: React.FC = () => {
     isError: isMessagesError,
   } = useLoadMessagesQuery(
     {
-      clientId: clientId!, // non-null assertion
-      userId: userInfo.userId!,
+      clientId: clientId!, // logged-in client
+      userId: user?.userId!, // user from param
     },
-    { skip: !clientId || !userInfo.userId }
+    { skip: !clientId || !user?.userId }
   );
 
   // -------------------------------------
-  // Redirect if username is invalid or user not found
+  // Redirect if user invalid
   // -------------------------------------
   if (!username || isUserError || (!isUserLoading && !user)) {
     return <Navigate to="/404" replace />;

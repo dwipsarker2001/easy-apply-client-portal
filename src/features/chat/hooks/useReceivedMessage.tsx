@@ -3,6 +3,7 @@ import { useSocket } from './useSocket';
 import { useAppDispatch } from '@/hooks';
 import { ChatItem, UseReceivedMessageProps } from '../types';
 import { addMessage } from '../redux/chatSlice';
+import { formatTime } from '@/helpers';
 
 /*------------------------------------------------------------
  |                   Received Message Hook
@@ -16,7 +17,7 @@ import { addMessage } from '../redux/chatSlice';
 export const useReceivedMessage = ({
   roomId,
   enabled = true,
-}: UseReceivedMessageProps) => {
+}: UseReceivedMessageProps & { roomId: string }) => {
   const socket = useSocket();
   const dispatch = useAppDispatch();
 
@@ -37,14 +38,13 @@ export const useReceivedMessage = ({
         type: data.type,
         message: data.message,
         direction: data.direction,
-        time: data.time
+        time: formatTime(data.time),
       };
-
       dispatch(addMessage(message));
     };
 
     // 1. Setup listener first
-    socket.off('receive_message', handleReceiveMessage);
+    // Attach listener once
     socket.on('receive_message', handleReceiveMessage);
     socket.emit('join_room', { roomId });
 

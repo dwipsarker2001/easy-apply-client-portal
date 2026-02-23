@@ -7,24 +7,21 @@ import React, { useEffect, useState } from 'react';
 import { validateRegisterForm } from './validations/register.validation';
 import { RegisterFormErrors } from './types';
 
-
 const AuthSheet: React.FC = () => {
   const dispatch = useAppDispatch();
   const loginSheet = useAppSelector(state => state.auth.loginSheet);
-
   const [fullName, setFullName] = useState('');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [errors, setErrors] = useState<RegisterFormErrors>({});
   const [register, { isLoading, error, isSuccess }] = useRegisterMutation();
 
-  // get local 
+  // get local
   useEffect(() => {
     const clientId = localStorage.getItem('clientId');
     if (!clientId && !loginSheet) {
       dispatch(setLoginSheet(true));
     }
   }, [loginSheet, dispatch]);
-
 
   /* -------------------
        Handle submit

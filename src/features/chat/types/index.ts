@@ -1,6 +1,3 @@
-/*----------------------------------
-  Use received message props
-----------------------------------*/
 export interface UseReceivedMessageProps {
   roomId: string;
   enabled?: boolean;
@@ -11,7 +8,7 @@ export interface UseReceivedMessageProps {
 ----------------------------------*/
 export interface UseSendMessageProps {
   roomId: string;
-  userId: number | null;
+  userId: number;
   clientId: number;
   senderRole?: 'user' | 'client';
 }
@@ -24,18 +21,17 @@ export interface Message {
   roomId: string;
   clientId: number;
   userId: number;
-  senderRole: "client" | "user";
+  senderRole: 'client' | 'user';
   message: string;
   isRead: boolean;
   createdAt: string;
   updatedAt: string;
 }
 
-
 /*----------------------------------
   Chat Types
 ----------------------------------*/
-export type MessageDirection = "sent" | "received";
+export type MessageDirection = 'sent' | 'received';
 
 export type ChatItem = {
   id: string;
@@ -56,7 +52,7 @@ export type ChatResponse = {
   messageType: string;
   mimeType: string | null;
   isRead: boolean;
-  createdAt: string;   
+  createdAt: string;
   updatedAt: string;
 };
 

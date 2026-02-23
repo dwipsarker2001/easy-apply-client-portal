@@ -49,7 +49,6 @@ export const chatApi = baseApi.injectEndpoints({
           
           // map tha data
           const chatItems = data.map(mapToChatItem);
-
           dispatch(addChatItem(chatItems));
         } catch (error) {
           console.error("Load messages failed:", error);

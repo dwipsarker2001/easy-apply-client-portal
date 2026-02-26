@@ -24,7 +24,7 @@ const InputArea: React.FC = () => {
     sendMessage,
     handleFileChange,
   } = useSendMessage({
-    roomId: `room-user-${auth.userInfo.userId}`,
+    roomId: `room-user-${auth.userInfo.userId}-client-${auth.clientId}`,
     clientId: auth.clientId!,
     userId: auth.userInfo.userId!,
   });

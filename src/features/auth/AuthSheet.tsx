@@ -58,7 +58,7 @@ const AuthSheet: React.FC = () => {
 
       {/* Bottom Sheet */}
       <div
-        className={`fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl transform transition-transform duration-300 ease-out z-50 ${
+        className={`fixed bottom-0 left-0 right-0 w-full max-w-md mx-auto bg-white rounded-t-3xl shadow-2xl transform transition-transform duration-300 ease-out z-[100] ${
           loginSheet ? 'translate-y-0' : 'translate-y-full'
         }`}
       >

@@ -53,14 +53,14 @@ const InputArea: React.FC = () => {
               <p>Document</p>
             </label>
             <label
-              htmlFor="master-input"
+              
               className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1 cursor-not-allowed opacity-50"
             >
               <HugeiconsIcon icon={Image02FreeIcons} />
               <p>Gallery</p>
             </label>
             <label
-              htmlFor="master-input"
+              
               className="bg-[#f0f0f0] p-4 rounded-lg flex justify-center items-center flex-col gap-1 cursor-not-allowed opacity-50"
             >
               <HugeiconsIcon icon={SignatureFreeIcons} />

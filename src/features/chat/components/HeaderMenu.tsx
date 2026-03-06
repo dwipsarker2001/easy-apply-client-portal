@@ -7,6 +7,7 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
 import { clearChat } from '../redux/chatSlice';
+import Swal from 'sweetalert2';
 
 interface HeaderMenuProps {
   isOpen: boolean;
@@ -34,12 +35,32 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleClearChat = () => {
-    if (window.confirm('Are you sure you want to clear all messages?')) {
-      dispatch(clearChat());
-      onClose();
-    }
-  };
+  const handleClearChat = async () => {
+  const result = await Swal.fire({
+    title: 'Clear chat?',
+    text: 'All messages will be deleted permanently.',
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonText: 'Yes, clear it',
+    cancelButtonText: 'Cancel',
+    confirmButtonColor: '#1e293b',
+    cancelButtonColor: '#e5e7eb',
+    reverseButtons: true,
+    borderRadius: '12px',
+  });
+
+  if (result.isConfirmed) {
+    dispatch(clearChat());
+    onClose();
+
+    Swal.fire({
+      icon: 'success',
+      title: 'Chat cleared',
+      timer: 1200,
+      showConfirmButton: false,
+    });
+  }
+};
 
   const handleLogout = () => {
     if (window.confirm('Are you sure you want to logout?')) {
@@ -62,15 +83,6 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
       >
         {/* Menu Items */}
         <div className="py-1">
-          <button
-            onClick={handleClearChat}
-            className="w-full flex items-center gap-2 px-2 py-2 hover:bg-gray-50 transition-colors text-left group text-sm"
-          >
-            <div className="group-hover:scale-110 transition-transform">
-              <HugeiconsIcon icon={SpamIcon} />
-            </div>
-            <span className="text-gray-700 font-medium">Report</span>
-          </button>
 
           {/* Divider */}
           <div className="h-px bg-gray-100 my-1" />

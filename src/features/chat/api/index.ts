@@ -82,6 +82,22 @@ export const chatApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+  
+    /*------------------------------
+    | CLEAR CHAT HISTRORY
+    |-------------------------------
+    */
+    clearChatMessages: builder.mutation<
+      { success: boolean },
+      { clientId: number; userId: number }
+    >({
+      query: ({ clientId, userId }) => ({
+        url: `/client/clear-chat`,
+        method: "POST",
+        body: { clientId, userId },
+      }),
+    }),
+
   }),
 });
 
@@ -93,4 +109,5 @@ export const {
   useUploadDocumentMutation,
   useUploadPhotoMutation,
   useUploadSignatureMutation,
+  useClearChatMessagesMutation
 } = chatApi;

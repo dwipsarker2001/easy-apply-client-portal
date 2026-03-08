@@ -1,4 +1,4 @@
-import { useAppDispatch } from '@/hooks';
+import { useAppDispatch, useAppSelector } from '@/hooks';
 import {
   Delete02Icon,
   Logout03Icon,
@@ -7,6 +7,8 @@ import {
 import { HugeiconsIcon } from '@hugeicons/react';
 import React, { useEffect, useRef } from 'react';
 import { clearChat } from '../redux/chatSlice';
+import Swal from 'sweetalert2';
+import { useClearChatMessagesMutation } from '../api';
 
 interface HeaderMenuProps {
   isOpen: boolean;
@@ -16,6 +18,9 @@ interface HeaderMenuProps {
 const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
   const dispatch = useAppDispatch();
   const menuRef = useRef<HTMLDivElement>(null);
+  const userId = useAppSelector(state => state.auth.userInfo.userId);
+  const clientId = useAppSelector(state => state.auth.clientId);
+  const [clearChatMessages] = useClearChatMessagesMutation();
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -34,10 +39,40 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
     };
   }, [isOpen, onClose]);
 
-  const handleClearChat = () => {
-    if (window.confirm('Are you sure you want to clear all messages?')) {
-      dispatch(clearChat());
-      onClose();
+  /*
+  |------------------------------
+  | HANDLE CLEAR CHAT HISTRORY
+  |-------------------------------
+  */
+  const handleClearChat = async () => {
+    if (clientId === null || userId === null) {
+      console.error('clientId or userId is null');
+      return;
+    }
+
+    const result = await Swal.fire({
+      title: 'Clear Chat?',
+      text: 'All messages will be permanently deleted.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, clear it!',
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await clearChatMessages({
+          clientId,
+          userId,
+        }).unwrap();
+
+        dispatch(clearChat());
+        onClose();
+
+        Swal.fire('Cleared!', 'All messages deleted.', 'success');
+      } catch (error) {
+        Swal.fire('Error', 'Failed to clear chat.', 'error');
+        console.error(error);
+      }
     }
   };
 

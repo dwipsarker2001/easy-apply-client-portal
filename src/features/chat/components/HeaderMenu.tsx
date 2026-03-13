@@ -89,6 +89,7 @@ const HeaderMenu: React.FC<HeaderMenuProps> = ({ isOpen, onClose }) => {
       confirmColor: 'red',
       onConfirm: () => {
         dispatch(logout());
+        dispatch(clearChat());
         setModalConfig(null);
         onClose();
         showToast('Logged out successfully');

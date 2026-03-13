@@ -9,16 +9,18 @@ const TextMessage: React.FC<ChatItem> = ({
   direction = 'sent',
 }) => {
   return (
-    <div className={direction === 'sent' ? 'flex flex-row-reverse' : 'flex'}>
+    <div
+      className={`${direction === 'sent' ? 'flex flex-row-reverse ml-auto' : 'flex'} max-w-[80%]`}
+    >
       <div className="relative">
         <div
           className={
             direction === 'sent'
-              ? 'flex gap-2 bg-slate-700 p-2 px-3 text-white text-md rounded-lg rounded-tr-none'
-              : 'flex gap-2 bg-white p-2 px-3 rounded-lg rounded-tl-none'
+              ? 'flex flex-wrap justify-end gap-2 bg-slate-700 p-2 px-3 text-white text-md rounded-xl rounded-tr-none'
+              : 'flex flex-wrap gap-2 bg-white p-2 px-3 rounded-lg rounded-tl-none'
           }
         >
-          {message}
+          <div>{message}</div>
           <div className="text-xs font-thin flex items-end gap-1">
             <span>{time}</span>
             {direction === 'sent' && (

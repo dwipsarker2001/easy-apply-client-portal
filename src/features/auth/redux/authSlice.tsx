@@ -5,7 +5,7 @@ import { UserInfo } from '../types';
   State Type
 ----------------------------------*/
 interface AuthStateType {
-  clientId: number | null,
+  clientId: number | null;
   clientToken: string | null;
   userInfo: UserInfo;
   isLoggedIn: boolean;
@@ -33,16 +33,17 @@ const loadPersistedState = (): Partial<AuthStateType> => {
 const persistedState = loadPersistedState();
 
 const initialState: AuthStateType = {
-  clientId: Number(localStorage.getItem("clientId")) || null,
-  clientToken: localStorage.getItem("clientToken"),
+  clientId: Number(localStorage.getItem('clientId')) || null,
+  clientToken: localStorage.getItem('clientToken'),
   isLoggedIn: persistedState.isLoggedIn ?? false,
-  loginSheet: persistedState.loginSheet ?? (persistedState.isLoggedIn ? false : true),
+  loginSheet:
+    persistedState.loginSheet ?? (persistedState.isLoggedIn ? false : true),
   userInfo: persistedState.userInfo || {
     userId: null,
     userName: null,
     userEmail: null,
     userAvatar: undefined,
-    userStatus: false
+    userStatus: false,
   },
 };
 
@@ -54,10 +55,7 @@ const authSlice = createSlice({
   initialState,
   reducers: {
     /*----------------------------------
-      Login
-      - Sets isLoggedIn to true
-      - Stores user info in state
-      - Persists auth state to localStorage
+      Login 
     ----------------------------------*/
     login(state, action: PayloadAction<UserInfo>) {
       state.isLoggedIn = true;
@@ -78,24 +76,25 @@ const authSlice = createSlice({
     },
 
     /*----------------------------------
-      Logout
-      - Resets isLoggedIn and userInfo
-      - Closes login sheet
-      - Removes auth state from localStorage
+      Logout 
     ----------------------------------*/
     logout(state) {
       state.isLoggedIn = false;
-      state.userInfo = { 
-        userId: null, 
-        userName: null, 
-        userEmail: null, 
-        userAvatar: undefined, 
-        userStatus: false
+      state.clientId = null;
+      state.clientToken = null;
+      state.userInfo = {
+        userId: null,
+        userName: null,
+        userEmail: null,
+        userAvatar: undefined,
+        userStatus: false,
       };
-      state.loginSheet = false;
+      state.loginSheet = true;
 
       try {
         localStorage.removeItem('authState');
+        localStorage.removeItem('clientId');
+        localStorage.removeItem('clientToken');
       } catch (error) {
         console.error('Failed to clear state from localStorage:', error);
       }
@@ -103,7 +102,6 @@ const authSlice = createSlice({
 
     /*----------------------------------
       Set Login Sheet
-      - Toggles visibility of login modal/bottom sheet
     ----------------------------------*/
     setLoginSheet(state, action: PayloadAction<boolean>) {
       state.loginSheet = action.payload;
@@ -125,18 +123,18 @@ const authSlice = createSlice({
       state.clientId = action.payload;
     },
 
-
     /*----------------------------------
       Set client token
     ----------------------------------*/
     setClientToken(state, action: PayloadAction<string>) {
       state.clientToken = action.payload;
-    }
+    },
   },
 });
 
 /*----------------------------------
   Exports
 ----------------------------------*/
-export const { login, logout, setLoginSheet, setClientId, setClientToken } = authSlice.actions;
+export const { login, logout, setLoginSheet, setClientId, setClientToken } =
+  authSlice.actions;
 export default authSlice.reducer;

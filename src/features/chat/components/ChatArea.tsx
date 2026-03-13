@@ -7,6 +7,7 @@ import { setMediaFrom } from '../redux/chatSlice';
 const ChatArea: React.FC = () => {
   const dispatch = useAppDispatch();
   const { mediaFrom, chat } = useAppSelector(state => state.chat);
+  const { isLoggedIn } = useAppSelector(state => state.auth);
   const chatEndRef = useRef<HTMLDivElement>(null);
 
   // Auto-scroll to bottom when chat changes
@@ -25,12 +26,12 @@ const ChatArea: React.FC = () => {
       {isMediaOpen && (
         <div
           onClick={() => dispatch(setMediaFrom(null))}
-          className="absolute inset-0 z-10 bg-black/20 backdrop-blur-[2px]"
+          className={`absolute inset-0 ${isLoggedIn ? 'z-30' : 'z-99'}  bg-black/20 backdrop-blur-[2px]`}
         />
       )}
 
       {/* Chat content */}
-      <div className="relative z-20 flex flex-col h-full overflow-y-auto px-5 pt-4 gap-3">
+      <div className="relative z-20 flex flex-col h-full overflow-y-auto px-5 pt-4 gap-2">
         {chat.map(item => {
           if (item.type === 'text') {
             return (

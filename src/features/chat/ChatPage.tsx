@@ -8,6 +8,8 @@ import { useReceivedMessage } from './hooks/useReceivedMessage';
 import { useUserInfoQuery } from '../auth/api';
 import { useLoadMessagesQuery } from './api';
 import { useAppSelector } from '@/hooks';
+import UIWrapper from '@/components/UIWrapper';
+import Preview from './components/Preview';
 
 const ChatPage: React.FC = () => {
   const { userInfo, clientId } = useAppSelector(state => state.auth);
@@ -54,6 +56,7 @@ const ChatPage: React.FC = () => {
       <ChatArea />
       <InputArea />
       <AuthSheet />
+      <Preview />
     </div>
   );
 };

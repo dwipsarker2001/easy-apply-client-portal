@@ -1,4 +1,4 @@
-import { IconSvgElement } from "@hugeicons/react";
+import { IconSvgElement } from '@hugeicons/react';
 
 /*----------------------------------
   Common Component Props
@@ -22,7 +22,6 @@ export interface AppEvents {
   isMenuOpen: boolean;
 }
 
-
 /*----------------------------------
   Action Panel Props
 ----------------------------------*/
@@ -30,4 +29,15 @@ export interface ActionPanelProps {
   label: string;
   icon: IconSvgElement;
   onClick: () => void;
+}
+
+/*----------------------------------
+  Action Panel Props
+----------------------------------*/
+export interface ModalConfig {
+  title: string;
+  description: string;
+  confirmText: string;
+  confirmColor: 'red' | 'orange';
+  onConfirm: () => void;
 }

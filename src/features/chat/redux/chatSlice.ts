@@ -6,6 +6,7 @@ import { ChatItem } from '../types';
 ----------------------------------*/
 interface ChatState {
   chat: ChatItem[];
+  preview: string;
   mediaFrom: 'storage' | 'camera' | null;
 }
 
@@ -14,6 +15,7 @@ interface ChatState {
 ----------------------------------*/
 const initialState: ChatState = {
   chat: [],
+  preview: '',
   mediaFrom: null,
 };
 
@@ -70,6 +72,13 @@ const chatSlice = createSlice({
       state.mediaFrom =
         state.mediaFrom === action.payload ? null : action.payload;
     },
+
+    /*----------------------------------
+      Set Preview
+    ----------------------------------*/
+    setPreview(state, action: PayloadAction<string>) {
+      state.preview = action.payload;
+    },
   },
 });
 
@@ -83,6 +92,7 @@ export const {
   setMessages,
   clearChat,
   setMediaFrom,
+  setPreview,
 } = chatSlice.actions;
 
 export default chatSlice.reducer;

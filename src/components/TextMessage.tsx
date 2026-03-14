@@ -8,40 +8,54 @@ const TextMessage: React.FC<ChatItem> = ({
   time,
   direction = 'sent',
 }) => {
+  const isSent = direction === 'sent';
+
   return (
     <div
-      className={`${direction === 'sent' ? 'flex flex-row-reverse ml-auto' : 'flex'} max-w-[80%]`}
+      className={`${isSent ? 'flex flex-row-reverse ml-auto' : 'flex'} max-w-[80%]`}
     >
       <div className="relative">
         <div
           className={
-            direction === 'sent'
-              ? 'flex flex-wrap justify-end gap-2 bg-slate-700 p-2 px-3 text-white text-md rounded-xl rounded-tr-none'
-              : 'flex flex-wrap gap-2 bg-white p-2 px-3 rounded-lg rounded-tl-none'
+            isSent
+              ? 'relative bg-slate-700 p-2 px-3 text-white text-md rounded-xl rounded-tr-none'
+              : 'relative bg-white p-2 px-3 rounded-lg rounded-tl-none'
           }
         >
-          <div>{message}</div>
-          <div className="text-xs font-thin flex items-end gap-1">
+          <span className="break-words whitespace-pre-wrap leading-snug">
+            {message}
+            {/* Inline phantom spacer — reserves space so time never overlaps text */}
+            <span
+              aria-hidden="true"
+              className={`inline-flex invisible text-xs gap-1 ml-2 align-bottom ${isSent ? '' : ''}`}
+            >
+              {time}
+              {isSent && <HugeiconsIcon size={14} icon={TickDouble01Icon} />}
+            </span>
+          </span>
+
+          {/* Actual time — absolutely positioned to bottom-right */}
+          <span
+            className={`absolute bottom-2 right-3 flex items-end gap-1 text-xs font-thin ${
+              isSent ? 'text-white/60' : 'text-gray-400'
+            }`}
+          >
             <span>{time}</span>
-            {direction === 'sent' && (
-              <span>
-                <HugeiconsIcon size={16} icon={TickDouble01Icon} />
-              </span>
-            )}
-          </div>
+            {isSent && <HugeiconsIcon size={14} icon={TickDouble01Icon} />}
+          </span>
         </div>
+
         {/* Tail */}
         <div
           className={
-            direction === 'sent'
+            isSent
               ? 'absolute -right-1 top-0 w-3 h-3 bg-slate-700'
               : 'absolute -left-1 top-0 w-3 h-3 bg-white'
           }
           style={{
-            clipPath:
-              direction === 'sent'
-                ? 'polygon(0 0, 100% 0, 0 100%)'
-                : 'polygon(100% 0, 0 0, 100% 100%)',
+            clipPath: isSent
+              ? 'polygon(0 0, 100% 0, 0 100%)'
+              : 'polygon(100% 0, 0 0, 100% 100%)',
           }}
         />
       </div>

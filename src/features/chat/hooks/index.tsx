@@ -1,9 +1,8 @@
-import {
-  useUploadDocumentMutation,
-  useUploadPhotoMutation,
-  useUploadSignatureMutation,
-} from '../api';
+import { useAppDispatch } from '@/hooks';
+import { useClearChatMutation, useUploadDocumentMutation } from '../api';
 import { toast } from 'react-toastify';
+import { clearChat } from '../redux/chatSlice';
+export { useChatAreaController } from './useChatAreaController';
 
 /*--------------------------------------------
           Use Document Upload
@@ -15,11 +14,8 @@ export const useDocumentUpload = () => {
   const handleUpload = async (formData: FormData) => {
     try {
       const result = await uploadDocument(formData).unwrap();
-      console.log(result, 'this is result');
-      toast.success('Document uploaded successfully!');
       return result;
     } catch (err) {
-      toast.error('Failed to upload document.');
       console.error('Error uploading document:', err);
       throw err;
     }
@@ -34,52 +30,28 @@ export const useDocumentUpload = () => {
 };
 
 /*--------------------------------------------
-          Use Photo Upload
+          Use Document Upload
 -------------------------------------------*/
-export const usePhotoUpload = () => {
-  const [uploadPhoto, { data, isLoading, error }] = useUploadPhotoMutation();
+export const useClearChat = () => {
+  const dispatch = useAppDispatch();
+  const [clearChatMutation, { data, isLoading, error }] =
+    useClearChatMutation();
 
-  const handleUpload = async (formData: FormData) => {
+  const handleClearChat = async (userId: number, clientId: number) => {
     try {
-      const result = await uploadPhoto(formData).unwrap();
-      toast.success('Photo uploaded successfully!');
+      dispatch(clearChat());
+      const result = await clearChatMutation({ userId, clientId }).unwrap();
+      toast.success('Chat cleared successfully');
       return result;
     } catch (err) {
-      toast.error('Failed to upload photo.');
-      console.error('Error uploading photo:', err);
+      toast.error('Failed to clear chat.');
+      console.error('Error clearing chat:', err);
       throw err;
     }
   };
 
   return {
-    uploadPhoto: handleUpload,
-    data,
-    isLoading,
-    error,
-  };
-};
-
-/*--------------------------------------------
-          Use Signature Upload
--------------------------------------------*/
-export const useSignatureUpload = () => {
-  const [uploadSignature, { data, isLoading, error }] =
-    useUploadSignatureMutation();
-
-  const handleUpload = async (formData: FormData) => {
-    try {
-      const result = await uploadSignature(formData).unwrap();
-      toast.success('Signature uploaded successfully!');
-      return result;
-    } catch (err) {
-      toast.error('Failed to upload signature.');
-      console.error('Error uploading signature:', err);
-      throw err;
-    }
-  };
-
-  return {
-    uploadSignature: handleUpload,
+    handleClearChat,
     data,
     isLoading,
     error,

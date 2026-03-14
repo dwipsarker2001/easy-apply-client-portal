@@ -4,6 +4,14 @@ import { ChatItem } from '../types';
 /*----------------------------------
   State Type
 ----------------------------------*/
+export interface Response {
+  success: boolean;
+  message: string;
+}
+
+/*----------------------------------
+  State Type
+----------------------------------*/
 interface ChatState {
   chat: ChatItem[];
   preview: string;
